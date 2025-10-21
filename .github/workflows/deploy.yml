@@ -1,0 +1,30 @@
+name: Deploy Artist Site
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci
+      - run: npm run build --if-present || npx ng build --configuration=production
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Sync assets (immutable)
+        run: |
+          aws s3 sync dist/artist-site/browser s3://solowitluv-com/             --exclude index.html --cache-control "public,max-age=31536000,immutable"
+      - name: Upload index.html (no-cache)
+        run: |
+          aws s3 cp dist/artist-site/browser/index.html s3://solowitluv-com/index.html             --cache-control "no-cache"
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.DIST_ID }} --paths "/index.html" "/"

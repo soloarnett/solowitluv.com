@@ -1,0 +1,33 @@
+.centered-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0.5em;
+}
+
+.horizontal-flex {
+
+    // media query for mobile
+    @media (max-width: 600px) {
+        flex-direction: column-reverse;
+    }
+}
+
+.small-container {
+    margin-bottom: 0;
+}
+
+section, * section {
+    @media (max-width: 600px) {
+        margin-top: 2em !important;
+
+        &:first-of-type {
+            margin-top: 2em !important;
+        }
+    }
+}
+
+.section {
+    margin: 0 !important;
+}

@@ -1,0 +1,124 @@
+{
+  "featuredAlbum": {
+    "title": "Vibe Ascendant",
+    "tagline": "Debut album — Coming to your favorite streaming platforms 11.16",
+    "heroImage": "/assets/hero/hero.jpg",
+    "preSaveLinks": {
+      "appleMusic": "https://music.apple.com/us/artist/solo-wit-luv/1732960281",
+      "spotify": "https://open.spotify.com/artist/0ar5o5f7a5fTXvGPKz3qhs?si=1liC53mZQAqPObCqSU9JRA",
+      "youtubeMusic": "https://music.youtube.com/channel/UCcz7CeciTdVG8oraT-Y1yEQ?si=ZQNzuGm17fXIbrik",
+      "allPlatforms": "https://social.tunecore.com/linkShare?linkid=t7rKlWVN82i-nZDcJE--uQ&_gl=1*1pgcj8r*_gcl_au*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*FPAU*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*_ga*ODY1NTk2NzYuMTc1NzQ2NDc1OQ..*_ga_K3WT5EPX86*czE3NTc0NjQ3NTkkbzEkZzEkdDE3NTc0NzI0MjQkajUxJGwxJGgxOTAwMzk5Mjk2*_fplc*RmhENmZPOEdhVko5JTJCQmxsZnRGVGZaR0dRV2l0Y2hFOVZ5eWNham9KSkpmRm8wSE9FYiUyQiUyRlNKSkR2OW8zSVF0UWJ1dzBPTUpNbkdQQTRSanpQSEFkdVZBZ3ZuS3J6aGpPeCUyQkVJajclMkZ0JTJGQ01tOWk5TVAyQ3lPZG9TT21VR2ZnJTNEJTNE"
+    },
+    "releaseDate": "2025-11-01"
+  },
+  "singles": [
+    {
+      "title": "Relinquish",
+      "artist": "Solo Wit Luv",
+      "featuredArtists": [],
+      "coverArt": "/assets/covers/relinquish.jpg",
+      "links": {
+        "appleMusic": "http://itunes.apple.com/album/id/1840851603",
+        "spotify": "https://open.spotify.com/album/23CoPBHubf6NSvkdeT3vGW",
+        "youtubeMusic": "https://music.youtube.com/watch?v=jmOwsOu_1gI",
+        "allPlatforms": "https://social.tunecore.com/linkShare?linkid=V8mvgYzrSfZJolvzOsBGkg&_gl=1*15wpdjp*_gcl_au*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*FPAU*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*_ga*ODY1NTk2NzYuMTc1NzQ2NDc1OQ..*_ga_K3WT5EPX86*czE3NTgzNzgwNzkkbzMkZzEkdDE3NTgzNzg0MjUkajU5JGwxJGgxNTYyNTg0NTYz*_fplc*Q0JiQXhTbGU1VE0xbDFqcUg4TzZFSkNDOFR4QjA3Rm93JTJGdyUyRkhaQWFBdHlOR0Q1RzR0cTFMUWUyOHRLVUVGYiUyQkR6MzBBQ0klMkJtTXd6N1FnOGpsTUZsU3Q4dWxUaFZHbjIyZldNYUtzdnFRQkU2OVhRSzAwNnNjaHVTZ2ZLb1ElM0QlM0Q."
+      }
+    },
+    {
+      "title": "Way Out",
+      "artist": "Solo Wit Luv",
+      "featuredArtists": [],
+      "coverArt": "/assets/covers/way_out.jpg",
+      "links": {
+        "appleMusic": "http://itunes.apple.com/album/id/1840809491",
+        "spotify": "https://open.spotify.com/album/2P6lrqYqSl47E6MOlZE264",
+        "youtubeMusic": "https://music.youtube.com/watch?v=Z750g6F-yEg&si=j1y3uzm8YK6HITu0",
+        "allPlatforms": "https://social.tunecore.com/linkShare?linkid=madIHr8xrkdeY2-lf5Ne5Q&_gl=1*k5525y*_gcl_au*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*FPAU*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*_ga*ODY1NTk2NzYuMTc1NzQ2NDc1OQ..*_ga_K3WT5EPX86*czE3NTgzNzgwNzkkbzMkZzEkdDE3NTgzNzgyODckajIwJGwxJGgxNTYyNTg0NTYz*_fplc*Q0JiQXhTbGU1VE0xbDFqcUg4TzZFSkNDOFR4QjA3Rm93JTJGdyUyRkhaQWFBdHlOR0Q1RzR0cTFMUWUyOHRLVUVGYiUyQkR6MzBBQ0klMkJtTXd6N1FnOGpsTUZsU3Q4dWxUaFZHbjIyZldNYUtzdnFRQkU2OVhRSzAwNnNjaHVTZ2ZLb1ElM0QlM0Q."
+      }
+    },
+    {
+      "title": "Bioluminescent Boo",
+      "artist": "Solo Wit Luv",
+      "featuredArtists": [],
+      "coverArt": "/assets/covers/bioluminescent_boo.jpg",
+      "links": {
+        "appleMusic": "http://itunes.apple.com/album/id/1747254591",
+        "spotify": "https://open.spotify.com/album/4ExflmWrjJEPMtRuTTb9Oh",
+        "youtubeMusic": "https://music.youtube.com/watch?v=fW3wrdHhtdw",
+        "allPlatforms": "https://social.tunecore.com/linkShare?linkid=t7rKlWVN82i-nZDcJE--uQ&_gl=1*ryo2p3*_gcl_au*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*FPAU*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*_ga*ODY1NTk2NzYuMTc1NzQ2NDc1OQ..*_ga_K3WT5EPX86*czE3NTc0NjQ3NTkkbzEkZzEkdDE3NTc0NzM3MTYkajYwJGwxJGgxOTAwMzk5Mjk2*_fplc*RmhENmZPOEdhVko5JTJCQmxsZnRGVGZaR0dRV2l0Y2hFOVZ5eWNham9KSkpmRm8wSE9FYiUyQiUyRlNKSkR2OW8zSVF0UWJ1dzBPTUpNbkdQQTRSanpQSEFkdVZBZ3ZuS3J6aGpPeCUyQkVJajclMkZ0JTJGQ01tOWk5TVAyQ3lPZG9TT21VR2ZnJTNEJTNE"
+      }
+    },
+    {
+      "title": "Pretty Shoulder",
+      "artist": "Solo Wit Luv",
+      "featuredArtists": [],
+      "coverArt": "/assets/covers/pretty_shoulder.jpg",
+      "links": {
+        "appleMusic": "http://itunes.apple.com/album/id/1770103215",
+        "spotify": "https://open.spotify.com/album/0B3rjFOF7K9O8MtNjuC6IE",
+        "youtubeMusic": "https://music.youtube.com/watch?v=Tbn_xPYZWjU",
+        "allPlatforms": "https://social.tunecore.com/linkShare?linkid=E8Plku10lU5zdJWzJVIPvw&_gl=1*1s6h5vz*_gcl_au*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*FPAU*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*_ga*ODY1NTk2NzYuMTc1NzQ2NDc1OQ..*_ga_K3WT5EPX86*czE3NTc0NjQ3NTkkbzEkZzEkdDE3NTc0NzQ3MTYkajYwJGwxJGgxOTAwMzk5Mjk2*_fplc*RmhENmZPOEdhVko5JTJCQmxsZnRGVGZaR0dRV2l0Y2hFOVZ5eWNham9KSkpmRm8wSE9FYiUyQiUyRlNKSkR2OW8zSVF0UWJ1dzBPTUpNbkdQQTRSanpQSEFkdVZBZ3ZuS3J6aGpPeCUyQkVJajclMkZ0JTJGQ01tOWk5TVAyQ3lPZG9TT21VR2ZnJTNEJTNE"
+      }
+    },
+    {
+      "title": "Crescendo",
+      "artist": "Solo Wit Luv",
+      "featuredArtists": ["Nurse Kai"],
+      "coverArt": "/assets/covers/crescendo.jpg",
+      "links": {
+        "appleMusic": "http://itunes.apple.com/album/id/1748723828",
+        "spotify": "https://open.spotify.com/album/1csU0ixYetJKZcOrtMks5V",
+        "youtubeMusic": "https://music.youtube.com/watch?v=vRCG3Z2n8yE",
+        "allPlatforms": "https://social.tunecore.com/linkShare?linkid=90m0f4i78QQxUOoBuzJXJg&_gl=1*1v0ojec*_gcl_au*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*FPAU*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*_ga*ODY1NTk2NzYuMTc1NzQ2NDc1OQ..*_ga_K3WT5EPX86*czE3NTc0NjQ3NTkkbzEkZzEkdDE3NTc0NzQ0MzYkajYwJGwxJGgxOTAwMzk5Mjk2*_fplc*RmhENmZPOEdhVko5JTJCQmxsZnRGVGZaR0dRV2l0Y2hFOVZ5eWNham9KSkpmRm8wSE9FYiUyQiUyRlNKSkR2OW8zSVF0UWJ1dzBPTUpNbkdQQTRSanpQSEFkdVZBZ3ZuS3J6aGpPeCUyQkVJajclMkZ0JTJGQ01tOWk5TVAyQ3lPZG9TT21VR2ZnJTNEJTNE"
+      }
+    },
+    {
+      "title": "LAFS",
+      "artist": "Solo Wit Luv",
+      "featuredArtists": [],
+      "coverArt": "/assets/covers/lafs.jpg",
+      "links": {
+        "appleMusic": "http://itunes.apple.com/album/id/1733518639",
+        "spotify": "https://open.spotify.com/album/0mgTpuAf62eW5IvIkSmuPr",
+        "youtubeMusic": "https://music.youtube.com/watch?v=rai9IM2wcyw",
+        "allPlatforms": "https://social.tunecore.com/linkShare?linkid=ODG2AEk4wEiNHSfSVw_hag&_gl=1*5bacrw*_gcl_au*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*FPAU*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*_ga*ODY1NTk2NzYuMTc1NzQ2NDc1OQ..*_ga_K3WT5EPX86*czE3NTc0NjQ3NTkkbzEkZzEkdDE3NTc0NjQ5MzkkajYwJGwxJGgxOTAwMzk5Mjk2*_fplc*RmhENmZPOEdhVko5JTJCQmxsZnRGVGZaR0dRV2l0Y2hFOVZ5eWNham9KSkpmRm8wSE9FYiUyQiUyRlNKSkR2OW8zSVF0UWJ1dzBPTUpNbkdQQTRSanpQSEFkdVZBZ3ZuS3J6aGpPeCUyQkVJajclMkZ0JTJGQ01tOWk5TVAyQ3lPZG9TT21VR2ZnJTNEJTNE"
+      }
+    },
+    {
+      "title": "The Heat",
+      "artist": "Solo Wit Luv",
+      "featuredArtists": [],
+      "coverArt": "/assets/covers/the_heat.jpg",
+      "links": {
+        "appleMusic": "http://itunes.apple.com/album/id/1737589853",
+        "spotify": "https://open.spotify.com/album/6r17E6TwqDB0ZHkeQNPkFv",
+        "youtubeMusic": "https://music.youtube.com/watch?v=4M1ZbUKcWlg",
+        "allPlatforms": "https://social.tunecore.com/linkShare?linkid=9t0-BGxCJZ10G5lJNIrqBQ&_gl=1*1ye4p9g*_gcl_au*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*FPAU*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*_ga*ODY1NTk2NzYuMTc1NzQ2NDc1OQ..*_ga_K3WT5EPX86*czE3NTc0NjQ3NTkkbzEkZzEkdDE3NTc0NzI0MjQkajUxJGwxJGgxOTAwMzk5Mjk2*_fplc*RmhENmZPOEdhVko5JTJCQmxsZnRGVGZaR0dRV2l0Y2hFOVZ5eWNham9KSkpmRm8wSE9FYiUyQiUyRlNKSkR2OW8zSVF0UWJ1dzBPTUpNbkdQQTRSanpQSEFkdVZBZ3ZuS3J6aGpPeCUyQkVJajclMkZ0JTJGQ01tOWk5TVAyQ3lPZG9TT21VR2ZnJTNEJTNE"
+      }
+    },
+    {
+      "title": "Body Bounce",
+      "artist": "Solo Wit Luv",
+      "featuredArtists": [],
+      "coverArt": "/assets/covers/body_bounce.jpg",
+      "links": {
+        "appleMusic": "http://itunes.apple.com/album/id/1741980031",
+        "spotify": "https://open.spotify.com/album/6DBsbw9szy5qEzXzlWGjIb",
+        "youtubeMusic": "https://music.youtube.com/watch?v=f8PSpB7ra9c",
+        "allPlatforms": "https://social.tunecore.com/linkShare?linkid=IVm55JA-6YV5A32m3CqbVA&_gl=1*1o8v8lw*_gcl_au*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*FPAU*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*_ga*ODY1NTk2NzYuMTc1NzQ2NDc1OQ..*_ga_K3WT5EPX86*czE3NTc0NjQ3NTkkbzEkZzEkdDE3NTc0NzMyOTEkajYwJGwxJGgxOTAwMzk5Mjk2*_fplc*RmhENmZPOEdhVko5JTJCQmxsZnRGVGZaR0dRV2l0Y2hFOVZ5eWNham9KSkpmRm8wSE9FYiUyQiUyRlNKSkR2OW8zSVF0UWJ1dzBPTUpNbkdQQTRSanpQSEFkdVZBZ3ZuS3J6aGpPeCUyQkVJajclMkZ0JTJGQ01tOWk5TVAyQ3lPZG9TT21VR2ZnJTNEJTNE"
+      }
+    },
+    {
+      "title": "Nurse Bounce",
+      "artist": "Solo Wit Luv",
+      "featuredArtists": ["Nurse Kai"],
+      "coverArt": "/assets/covers/nurse_bounce.jpg",
+      "links": {
+        "appleMusic": "http://itunes.apple.com/album/id/1742531239",
+        "spotify": "https://open.spotify.com/album/4hmOLnWY06flCohoh1YxA9",
+        "youtubeMusic": "https://music.youtube.com/watch?v=Hs6MJrWAi6o",
+        "allPlatforms": "https://social.tunecore.com/linkShare?linkid=19vEHdtxUfBKc93_b2DONg&_gl=1*hg9mba*_gcl_au*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*FPAU*MjE0NTU0NTI1Mi4xNzU3NDY0NzU5*_ga*ODY1NTk2NzYuMTc1NzQ2NDc1OQ..*_ga_K3WT5EPX86*czE3NTc0NjQ3NTkkbzEkZzEkdDE3NTc0NzM3MTYkajYwJGwxJGgxOTAwMzk5Mjk2*_fplc*RmhENmZPOEdhVko5JTJCQmxsZnRGVGZaR0dRV2l0Y2hFOVZ5eWNham9KSkpmRm8wSE9FYiUyQiUyRlNKSkR2OW8zSVF0UWJ1dzBPTUpNbkdQQTRSanpQSEFkdVZBZ3ZuS3J6aGpPeCUyQkVJajclMkZ0JTJGQ01tOWk5TVAyQ3lPZG9TT21VR2ZnJTNEJTNE"
+      }
+    }
+  ]
+}

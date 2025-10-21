@@ -1,0 +1,55 @@
+<section class="hero">
+
+    <div class="hero-bg" [style.background-image]="featured?.heroImage ? 'url(' + featured.heroImage + ')' : 'none'">
+    </div>
+    <div class="hero-inner container glass">
+        <h1>{{featured?.title || 'Album coming soon'}}</h1>
+        <p class="small">{{featured?.tagline}}</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+            <a class="button" *ngIf="featured?.preSaveLinks?.appleMusic" [href]="featured.preSaveLinks.appleMusic"
+                target="_blank">Apple Music</a>
+            <a class="button" *ngIf="featured?.preSaveLinks?.spotify" [href]="featured.preSaveLinks.spotify"
+                target="_blank">Spotify</a>
+            <a class="button" *ngIf="featured?.preSaveLinks?.youtubeMusic" [href]="featured.preSaveLinks.youtubeMusic"
+                target="_blank">YouTube Music</a>
+            <a class="button" *ngIf="featured?.preSaveLinks?.allPlatforms" [href]="featured.preSaveLinks.allPlatforms"
+                target="_blank">All Platforms</a>
+        </div>
+    </div>
+</section>
+
+<div class="centered-content">
+    <div class="horizontal-flex">
+
+        <!-- include section for shows component -->
+        <app-shows></app-shows>
+        <!-- end shows component section -->
+
+        <!-- Artist Portrait Section -->
+        <section class="artist-intro container small-container">
+            <img src="/assets/images/profile.webp" alt="Solo Wit Luv" class="artist-photo" />
+            <h2 class="artist-name">Solo Wit Luv</h2>
+            <p class="small">Recording Artist & Producer</p>
+        </section>
+    </div>
+
+    <section class="section container">
+        <h2>Latest Releases</h2>
+        <div class="card-grid">
+            <article class="glass" *ngFor="let s of singles" style="padding:16px;">
+                <img class="cover" [src]="s.coverArt" [alt]="s.title" />
+                <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
+                <p class="small">{{s.artist}} <span *ngIf="s.featuredArtists?.length">• feat.
+                        {{s.featuredArtists.join(', ')}}</span></p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+                    <a *ngIf="s.links.appleMusic" class="button" [href]="s.links.appleMusic" target="_blank">Apple
+                        Music</a>
+                    <a *ngIf="s.links.spotify" class="button" [href]="s.links.spotify" target="_blank">Spotify</a>
+                    <a *ngIf="s.links.youtubeMusic" class="button" [href]="s.links.youtubeMusic"
+                        target="_blank">YouTube</a>
+                    <a *ngIf="s.links.allPlatforms" class="button" [href]="s.links.allPlatforms" target="_blank">All</a>
+                </div>
+            </article>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,53 @@
+:host{
+    padding: 0.5em;
+    overflow: auto;
+}
+
+.content-container {
+    padding: 0.5em;
+}
+
+.color-link{
+    color: var(--accent);
+    &:visited{
+        color: var(--accent);
+    }
+}
+
+.social-links {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+
+  a {
+    font-size: 1.4rem;
+    color: #fff;
+    transition: color 0.3s ease;
+  }
+
+  a:hover {
+    color: var(--accent, #66cfff);
+  }
+
+  @media (max-width: 600px) {
+    justify-content: center;
+  }
+}
+
+/* Layout shell so footer sticks to bottom */
+.page {
+  min-height: 1200px;          /* viewport height, accounts for mobile UI */
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1 0 auto;              /* fills remaining space */
+  /* if you had global padding on another wrapper, keep it there */
+}
+
+.site-footer {
+  flex-shrink: 0;              /* don’t let it collapse */
+  margin-top: 0;               /* remove any top margins that create gaps */
+}

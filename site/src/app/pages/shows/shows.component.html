@@ -1,0 +1,17 @@
+<section class="section container">
+    <h2>Upcoming Shows</h2>
+    <div class="glass" *ngFor="let show of shows"
+        style="padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div>
+            <div style="font-weight:700">{{ show.date | date: 'fullDate' }} - {{show.time}}</div>
+            <div class="small">{{show.venue}} — {{show.city}}</div>
+        </div>
+        <a *ngIf="show.ticketsUrl?.length" class="button" [href]="show.ticketsUrl" target="_blank">Tickets</a>
+        <a *ngIf="!show.ticketsUrl?.length && show.detailsUrl?.length" class="button" [href]="show.detailsUrl"
+            target="_blank">Details</a>
+    </div>
+    <!-- flyer -->
+    <div class="flyer">
+        <img src="/assets/images/v_mathis_flyer.jpeg" alt="Show Flyer" />
+    </div>
+</section>

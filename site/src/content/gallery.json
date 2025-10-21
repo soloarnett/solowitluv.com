@@ -1,0 +1,13 @@
+{
+  "images": [
+    { "src": "/assets/hero/featured_album_2000.webp", "alt": "Vibe Ascendant — featured album hero" },
+    { "src": "/assets/images/portrait.webp", "alt": "Vibe Ascendant — featured album" },
+    { "src": "/assets/covers/pretty_shoulder.webp", "alt": "Pretty Shoulder — single cover" },
+    { "src": "/assets/covers/crescendo.webp", "alt": "Crescendo — single cover" },
+    { "src": "/assets/covers/bioluminescent_boo.webp", "alt": "Bioluminescent Boo — single cover" },
+    { "src": "/assets/covers/body_bounce.webp", "alt": "Body Bounce — single cover" },
+    { "src": "/assets/covers/nurse_bounce.webp", "alt": "Nurse Bounce — single cover" },
+    { "src": "/assets/covers/the_heat.webp", "alt": "The Heat — single cover" },
+    { "src": "/assets/covers/lafs.webp", "alt": "Lafs — single cover" }
+  ]
+}

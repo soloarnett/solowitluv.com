@@ -1,0 +1,37 @@
+<div class="page">
+    <nav class="glass">
+        <div class="nav-inner container">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a>
+            <a routerLink="/releases" routerLinkActive="active">Releases</a>
+            <a routerLink="/shows" routerLinkActive="active">Shows</a>
+            <a routerLink="/gallery" routerLinkActive="active">Gallery</a>
+            <a routerLink="/bio" routerLinkActive="active">Bio</a>
+            <a routerLink="/donate" routerLinkActive="active">Donate</a>
+        </div>
+    </nav>
+
+    <div class="app-main">
+        <router-outlet />
+    </div>
+
+    <footer class="site-footer content-container">
+        <div class="container footer-content glass">
+            <p>© {{ currentYear }} Precedence Records · Atlanta, GA</p>
+            <p>
+                Booking:
+                <a href="mailto:booking@solowitluv.com" class="color-link">booking&#64;solowitluv.com</a>
+            </p>
+            <div class="social-links">
+                <a href="https://facebook.com/solowitluv" target="_blank" rel="noopener" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://instagram.com/solowitluv" target="_blank" rel="noopener" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://tiktok.com/@solowitluv" target="_blank" rel="noopener" aria-label="TikTok">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+</div>
