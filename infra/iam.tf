@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "lambda_assume" {
 }
 
 resource "aws_iam_role" "release_api_role" {
-  name               = "${var.project}-release-api-role"
+  name               = "solowitluv-release-api-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
@@ -25,7 +25,7 @@ data "aws_iam_policy_document" "release_api_policy" {
 }
 
 resource "aws_iam_policy" "release_api_policy" {
-  name   = "${var.project}-release-api-policy"
+  name   = "solowitluv-release-api-policy"
   policy = data.aws_iam_policy_document.release_api_policy.json
 }
 

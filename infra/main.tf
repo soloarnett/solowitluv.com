@@ -14,19 +14,30 @@ provider "aws" {
 }
 provider "aws" { region = "us-west-2" }
 
-locals {
-  bucket_name = replace(var.domain_name, ".", "-")
+
+resource "random_integer" "bucket_suffix" {
+  min = 10000
+  max = 99999
 }
 
-resource "aws_s3_bucket" "site" { bucket = local.bucket_name }
+locals {
+  bucket_name = format("solowitluv-%s-%d", replace(var.domain_name, ".", "-"), random_integer.bucket_suffix.result)
+}
+
+resource "aws_s3_bucket" "site" {
+  provider = aws.use1
+  bucket   = local.bucket_name
+}
 resource "aws_s3_bucket_ownership_controls" "site" {
-  bucket = aws_s3_bucket.site.id
+  provider = aws.use1
+  bucket   = aws_s3_bucket.site.id
   rule {
     object_ownership = "BucketOwnerEnforced"
   }
 }
 resource "aws_s3_bucket_versioning" "site" {
-  bucket = aws_s3_bucket.site.id
+  provider = aws.use1
+  bucket   = aws_s3_bucket.site.id
   versioning_configuration { status = "Enabled" }
 }
 
@@ -57,8 +68,9 @@ data "aws_iam_policy_document" "site" {
 }
 
 resource "aws_s3_bucket_policy" "site" {
-  bucket = aws_s3_bucket.site.id
-  policy = data.aws_iam_policy_document.site.json
+  provider = aws.use1
+  bucket   = aws_s3_bucket.site.id
+  policy   = data.aws_iam_policy_document.site.json
 }
 
 resource "aws_acm_certificate" "cert" {

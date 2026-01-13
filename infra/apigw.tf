@@ -1,4 +1,5 @@
 resource "aws_apigatewayv2_api" "release_api" {
+  provider      = aws.use1
   name          = "${var.project}-release-http-api"
   protocol_type = "HTTP"
   cors_configuration {
@@ -9,6 +10,7 @@ resource "aws_apigatewayv2_api" "release_api" {
 }
 
 resource "aws_apigatewayv2_integration" "lambda_integration" {
+  provider               = aws.use1
   api_id                 = aws_apigatewayv2_api.release_api.id
   integration_type       = "AWS_PROXY"
   integration_uri        = aws_lambda_function.release_api.invoke_arn
@@ -16,12 +18,14 @@ resource "aws_apigatewayv2_integration" "lambda_integration" {
 }
 
 resource "aws_apigatewayv2_route" "get_releases" {
+  provider  = aws.use1
   api_id    = aws_apigatewayv2_api.release_api.id
   route_key = "GET /releases"
   target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 
 resource "aws_lambda_permission" "apigw_invoke" {
+  provider      = aws.use1
   statement_id  = "AllowAPIGwInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.release_api.function_name
@@ -30,6 +34,7 @@ resource "aws_lambda_permission" "apigw_invoke" {
 }
 
 resource "aws_apigatewayv2_stage" "prod" {
+  provider    = aws.use1
   api_id      = aws_apigatewayv2_api.release_api.id
   name        = "$default"
   auto_deploy = true

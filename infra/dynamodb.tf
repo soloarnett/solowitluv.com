@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "releases" {
-  name         = "releases"
+  name         = "solowitluv-releases"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "id"
 
