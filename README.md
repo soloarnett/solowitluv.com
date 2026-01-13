@@ -22,6 +22,9 @@ BUCKET=$(aws s3api list-buckets --query 'Buckets[?starts_with(Name,`solowitluv-s
 aws s3 sync ./dist/artist-site/browser s3://$BUCKET/ --exclude "index.html" --cache-control "public,max-age=31536000,immutable"
 aws s3 cp ./dist/artist-site/browser/index.html s3://$BUCKET/index.html --cache-control "no-cache"
 
-# Replace <DIST_ID> with your CloudFront distribution ID
-aws cloudfront create-invalidation --distribution-id <DIST_ID> --paths "/index.html" "/" "/releases" "/shows" "/gallery" "/bio"
+
+# Automatically get your CloudFront distribution ID (requires AWS CLI and jq):
+DIST_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Aliases.Items[?contains(@, 'solowitluv.com')]].Id" --output text)
+
+aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/index.html" "/" "/releases" "/shows" "/gallery" "/bio"
 ```
