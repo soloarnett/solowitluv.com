@@ -34,7 +34,6 @@ section {
     background-size: cover;
     background-repeat: no-repeat;
     opacity: 0.4;
-    // background position needs to be horizontally centered but vertically anchored from the bottom
     background-position: center bottom;
     position: absolute;
     top: 0;
@@ -47,4 +46,78 @@ section {
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: 100% 100%;
     -webkit-backdrop-filter: blur(20px);
+
+    /* Animation for slow scale and pan */
+
+    /*
+     * To alternate animation direction for different cards, add a class in the template:
+     * <div class="card-blur-bg reverse"></div>
+     * and use the selector below.
+     */
+    animation: cardBlurPanZoom 32s ease-in-out infinite alternate;
+    -webkit-animation: cardBlurPanZoom 32s ease-in-out infinite alternate;
+
+    //apply to every other child
+
+}
+
+.glass .card-blur-bg.reverse {
+    animation-direction: alternate-reverse;
+    -webkit-animation-direction: alternate-reverse;
+    animation-duration: 24s;
+}
+
+.glass .card-blur-bg.normal{
+    animation-duration: 18s;
+}
+
+
+@keyframes cardBlurPanZoom {
+    0% {
+        transform: scale(1) translateX(0);
+        background-position: left bottom;
+    }
+
+    25% {
+        transform: scale(1.25) translateX(10px);
+    }
+
+    // 50% {
+    //     transform: scale(1.5) translateX(20px);
+    //     background-position: right bottom;
+    // }
+
+    75% {
+        transform: scale(1.75) translateX(10px);
+    }
+
+    100% {
+        transform: scale(1) translateX(0);
+        background-position: right bottom;
+    }
+}
+
+@-webkit-keyframes cardBlurPanZoom {
+    0% {
+        transform: scale(1) translateX(0);
+        background-position: left bottom;
+    }
+
+    25% {
+        transform: scale(1.25) translateX(10px);
+    }
+
+    // 50% {
+    //     transform: scale(1.5) translateX(20px);
+    //     background-position: right bottom;
+    // }
+
+    75% {
+        transform: scale(1.75) translateX(10px);
+    }
+
+    100% {
+        transform: scale(1) translateX(0);
+        background-position: right bottom;
+    }
 }

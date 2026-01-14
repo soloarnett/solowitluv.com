@@ -6,8 +6,10 @@
         <button class="button" (click)="reload()">Retry</button>
     </div>
     <div class="card-grid" *ngIf="!loading && !error && albums.length">
-        <article class="glass card-bg" *ngFor="let s of albums" style="padding:16px; position:relative; overflow:hidden;">
+        <article class="glass card-bg" *ngFor="let s of albums; let i = index" style="padding:16px; position:relative; overflow:hidden;">
+            <!-- every other card gets the 'reverse' class -->
             <div class="card-blur-bg" 
+                [ngClass]="{ 'reverse': i % 2 !== 0 }"
                 [ngStyle]="{ 'background-image': 'url(' + (s.coverArt || s.thumb_url || s.heroImage) + ')' }">
             </div>
             <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" />
@@ -33,8 +35,11 @@
         <button class="button" (click)="reload()">Retry</button>
     </div>
     <div class="card-grid" *ngIf="!loading && !error && releases.length">
-        <article class="glass card-bg" *ngFor="let s of releases" style="padding:16px; position:relative; overflow:hidden;">
+        <article class="glass card-bg" *ngFor="let s of releases; let i = index" style="padding:16px; position:relative; overflow:hidden;">
+            <!-- every 2nd card gets the 'reverse' class, but every 3rd card gets the 'normal' class, the first card gets nothing -->
             <div class="card-blur-bg" 
+                [ngClass]="{ 'reverse': i % 2 === 0, 'normal': i % 3 === 0 }"
+
                 [ngStyle]="{ 'background-image': 'url(' + (s.coverArt || s.thumb_url || s.heroImage) + ')' }">
             </div>
             <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" />
