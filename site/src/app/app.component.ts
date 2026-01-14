@@ -10,7 +10,5 @@ import { NgClass } from '@angular/common';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  get currentYear() {
-    return new Date().getFullYear();
-  }
+  readonly currentYear = new Date().getFullYear();
 }

@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ContentService } from '../../services/content.service';
 import { ShowsComponent } from '../shows/shows.component';
 import { ReleasesComponent } from '../releases/releases.component';
@@ -9,13 +10,14 @@ import { ReleasesComponent } from '../releases/releases.component';
   selector: 'app-home',
   imports: [CommonModule, ShowsComponent, ReleasesComponent],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
   private content = inject(ContentService);
   featured: any; singles: any[] = [];
   constructor(){
-    this.content.getReleases().subscribe((data:any)=>{
+    this.content.getReleases().pipe(takeUntilDestroyed()).subscribe((data:any)=>{
       const releases = data.releases || [];
       this.featured = releases.find((r:any) => r.type === 'album' && r.featured);
       this.singles = releases

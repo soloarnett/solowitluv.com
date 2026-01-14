@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { InViewAnimationDirective } from 'src/app/directives/in-view.directive';
 
 @Component({
@@ -7,7 +7,8 @@ import { InViewAnimationDirective } from 'src/app/directives/in-view.directive';
   standalone: true,
   imports: [CommonModule, InViewAnimationDirective],
   templateUrl: './latest-releases.component.html',
-  styleUrl: './latest-releases.component.scss'
+  styleUrl: './latest-releases.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LatestReleasesComponent {
   @Input() releases: any[] = [];

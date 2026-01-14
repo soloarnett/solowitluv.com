@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLinkActive, RouterOutlet, RouterLink } from '@angular/router';
 
 @Component({
@@ -6,7 +6,8 @@ import { RouterLinkActive, RouterOutlet, RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterOutlet, RouterLinkActive, RouterLink],
   templateUrl: './donate.component.html',
-  styleUrl: './donate.component.scss'
+  styleUrl: './donate.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DonateComponent {
 

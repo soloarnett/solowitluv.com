@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ContentService } from '../../services/content.service';
 
 @Component({
@@ -7,12 +8,13 @@ import { ContentService } from '../../services/content.service';
   selector: 'app-shows',
   imports: [CommonModule],
   templateUrl: './shows.component.html',
-  styleUrls: ['./shows.component.scss']
+  styleUrls: ['./shows.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowsComponent {
   private content = inject(ContentService);
   shows: any[] = [];
   constructor(){
-    this.content.getShows().subscribe((shows: any[]) => this.shows = shows);
+    this.content.getShows().pipe(takeUntilDestroyed()).subscribe((shows: any[]) => this.shows = shows);
   }
 }

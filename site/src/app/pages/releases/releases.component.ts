@@ -1,5 +1,6 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LatestReleasesComponent } from '../../utils/latest-releases/latest-releases.component';
 import { ContentService } from '../../services/content.service';
 import { InViewAnimationDirective } from 'src/app/directives/in-view.directive';
@@ -9,7 +10,8 @@ import { InViewAnimationDirective } from 'src/app/directives/in-view.directive';
   selector: 'app-releases',
   imports: [CommonModule, LatestReleasesComponent, InViewAnimationDirective],
   templateUrl: './releases.component.html',
-  styleUrls: ['./releases.component.scss']
+  styleUrls: ['./releases.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReleasesComponent {
   private content = inject(ContentService);
@@ -27,7 +29,7 @@ export class ReleasesComponent {
   reload() {
     this.loading = true;
     this.error = false;
-    this.content.getReleases().subscribe({
+    this.content.getReleases().pipe(takeUntilDestroyed()).subscribe({
       next: (d: any) => {
         const all = d?.releases ?? [];
         // Separate albums and other releases, order by releaseDate descending
