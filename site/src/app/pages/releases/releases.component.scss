@@ -9,9 +9,9 @@
 section {
     width: 100%;
 
-    @media (max-width: 600px) {
-        width: 90%;
-    }
+    // @media (max-width: 600px) {
+    //     width: 100%;
+    // }
 
     &:first-of-type {
         @media (max-width: 600px) {
@@ -28,6 +28,7 @@ section {
 }
 
 .glass .card-blur-bg {
+    will-change: transform, opacity;
     width: 100%;
     height: 100%;
     background-size: cover;

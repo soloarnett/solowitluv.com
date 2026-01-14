@@ -10,6 +10,7 @@
     top: 0;
     left: 0;
     filter: blur(20px);
+    will-change: transform, opacity;
     /* Webkit/Safari fixes */
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     -webkit-mask-repeat: no-repeat;
@@ -20,6 +21,7 @@
 .card-bg>*:not(.card-blur-bg) {
     position: relative;
     z-index: 1;
+    will-change: transform, opacity;
 }
 
 .centered-content {
