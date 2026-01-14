@@ -26,6 +26,8 @@ export class ReleasesComponent {
   loading = false;
   error = false;
   playingKey: string | null = null;
+  failedVideos = new Set<string>();
+  retryAttempts = new Map<string, number>();
 
 
   constructor() { this.reload(); }
@@ -63,12 +65,15 @@ export class ReleasesComponent {
     return this.extractYouTubeId(release?.links?.youtubeMusic || release?.preSaveLinks?.youtubeMusic);
   }
 
-  getSafeYouTubeUrl(release: any, section: string = 'main'): SafeResourceUrl {
+  getSafeYouTubeUrl(release: any, section: string = 'main'): SafeResourceUrl | null {
     const videoId = this.getYouTubeId(release);
     if (!videoId || !this.isPlaying(release, section)) {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
+      return null;
     }
-    const url = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&enablejsapi=1`;
+    const key = `${section}-${videoId}`;
+    const retryCount = this.retryAttempts.get(key) || 0;
+    // Enable autoplay with audible sound
+    const url = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&enablejsapi=1&retry=${retryCount}`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
@@ -111,5 +116,64 @@ export class ReleasesComponent {
 
   trackByReleaseId(index: number, release: any): any {
     return release.id || release.title || index;
+  }
+
+  onIframeLoad(release: any, section: string, event: Event): void {
+    const videoId = this.getYouTubeId(release);
+    if (!videoId) return;
+    
+    const key = `${section}-${videoId}`;
+    const iframe = event.target as HTMLIFrameElement;
+    
+    // Check if iframe loaded successfully (not about:blank) and only process once
+    if (iframe.src && iframe.src.includes('youtube.com') && this.isPlaying(release, section)) {
+      if (this.failedVideos.has(key)) {
+        this.failedVideos.delete(key);
+        this.cdr.markForCheck();
+      }
+    }
+  }
+
+  onIframeError(release: any, section: string, event: Event): void {
+    const videoId = this.getYouTubeId(release);
+    if (!videoId) return;
+    
+    const key = `${section}-${videoId}`;
+    if (!this.failedVideos.has(key)) {
+      this.failedVideos.add(key);
+      this.cdr.markForCheck();
+    }
+  }
+
+  retryVideo(release: any, section: string, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const videoId = this.getYouTubeId(release);
+    if (!videoId) return;
+    
+    const key = `${section}-${videoId}`;
+    const currentRetries = this.retryAttempts.get(key) || 0;
+    
+    if (currentRetries < 3) {
+      this.retryAttempts.set(key, currentRetries + 1);
+      this.failedVideos.delete(key);
+      
+      // Toggle off and on to force reload
+      this.playingKey = null;
+      this.cdr.markForCheck();
+      
+      setTimeout(() => {
+        this.playingKey = key;
+        this.cdr.markForCheck();
+      }, 100);
+    }
+  }
+
+  hasVideoFailed(release: any, section: string): boolean {
+    const videoId = this.getYouTubeId(release);
+    if (!videoId) return false;
+    const key = `${section}-${videoId}`;
+    return this.failedVideos.has(key);
   }
 }

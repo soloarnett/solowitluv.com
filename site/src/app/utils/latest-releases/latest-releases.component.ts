@@ -19,6 +19,8 @@ export class LatestReleasesComponent {
   @Input() error: boolean = false;
   @Input() playingKey: string | null = null;
   @Output() playVideo = new EventEmitter<string | null>();
+  failedVideos = new Set<string>();
+  retryAttempts = new Map<string, number>();
 
   get displayedSingles() {
     return this.releases ?? []
@@ -34,12 +36,14 @@ export class LatestReleasesComponent {
     return this.extractYouTubeId(release?.links?.youtubeMusic || release?.preSaveLinks?.youtubeMusic);
   }
 
-  getSafeYouTubeUrl(release: any): SafeResourceUrl {
+  getSafeYouTubeUrl(release: any): SafeResourceUrl | null {
     const videoId = this.getYouTubeId(release);
     if (!videoId || !this.isPlaying(release)) {
-      return this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
+      return null;
     }
-    const url = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&enablejsapi=1`;
+    const key = `latest-${videoId}`;
+    const retryCount = this.retryAttempts.get(key) || 0;
+    const url = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&enablejsapi=1&retry=${retryCount}`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
@@ -76,5 +80,58 @@ export class LatestReleasesComponent {
 
   trackByReleaseId(index: number, release: any): any {
     return release.id || release.title || index;
+  }
+
+  onIframeLoad(release: any, event: Event): void {
+    const videoId = this.getYouTubeId(release);
+    if (!videoId) return;
+    
+    const key = `latest-${videoId}`;
+    const iframe = event.target as HTMLIFrameElement;
+    
+    if (iframe.src && iframe.src.includes('youtube.com') && this.isPlaying(release)) {
+      if (this.failedVideos.has(key)) {
+        this.failedVideos.delete(key);
+      }
+    }
+  }
+
+  onIframeError(release: any, event: Event): void {
+    const videoId = this.getYouTubeId(release);
+    if (!videoId) return;
+    
+    const key = `latest-${videoId}`;
+    if (!this.failedVideos.has(key)) {
+      this.failedVideos.add(key);
+    }
+  }
+
+  retryVideo(release: any, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const videoId = this.getYouTubeId(release);
+    if (!videoId) return;
+    
+    const key = `latest-${videoId}`;
+    const currentRetries = this.retryAttempts.get(key) || 0;
+    
+    if (currentRetries < 3) {
+      this.retryAttempts.set(key, currentRetries + 1);
+      this.failedVideos.delete(key);
+      
+      this.playVideo.emit(null);
+      
+      setTimeout(() => {
+        this.playVideo.emit(key);
+      }, 100);
+    }
+  }
+
+  hasVideoFailed(release: any): boolean {
+    const videoId = this.getYouTubeId(release);
+    if (!videoId) return false;
+    const key = `latest-${videoId}`;
+    return this.failedVideos.has(key);
   }
 }

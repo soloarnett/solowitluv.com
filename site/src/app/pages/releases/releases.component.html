@@ -32,8 +32,9 @@
                             <rect x="6" y="6" width="12" height="12"/>
                         </svg>
                     </button>
-                    <iframe class="youtube-player" 
-                            [src]="getSafeYouTubeUrl(s, 'albums')"
+                    <iframe *ngIf="isPlaying(s, 'albums')" 
+                            class="youtube-player" 
+                            [src]="getSafeYouTubeUrl(s, 'albums')!"
                             allow="autoplay; encrypted-media" frameborder="0"></iframe>
                 </div>
                 <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
@@ -84,8 +85,9 @@
                             <rect x="6" y="6" width="12" height="12"/>
                         </svg>
                     </button>
-                    <iframe class="youtube-player" 
-                            [src]="getSafeYouTubeUrl(s, 'singles')"
+                    <iframe *ngIf="isPlaying(s, 'singles')" 
+                            class="youtube-player" 
+                            [src]="getSafeYouTubeUrl(s, 'singles')!"
                             allow="autoplay; encrypted-media" frameborder="0"></iframe>
                 </div>
                 <h3 style="margin:12px 0 4px;">{{s.title}}</h3>

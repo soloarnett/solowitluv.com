@@ -25,8 +25,9 @@
                         <rect x="6" y="6" width="12" height="12"/>
                     </svg>
                 </button>
-                <iframe class="youtube-player" 
-                        [src]="getSafeYouTubeUrl(s)"
+                <iframe *ngIf="isPlaying(s)" 
+                        class="youtube-player" 
+                        [src]="getSafeYouTubeUrl(s)!"
                         allow="autoplay; encrypted-media" frameborder="0"></iframe>
             </div>
             <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
