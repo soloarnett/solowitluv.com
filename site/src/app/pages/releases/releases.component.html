@@ -6,7 +6,10 @@
         <button class="button" (click)="reload()">Retry</button>
     </div>
     <div class="card-grid" *ngIf="!loading && !error && albums.length">
-        <article class="glass" *ngFor="let s of albums" style="padding:16px;">
+        <article class="glass card-bg" *ngFor="let s of albums" style="padding:16px; position:relative; overflow:hidden;">
+            <div class="card-blur-bg" 
+                [ngStyle]="{ 'background-image': 'url(' + (s.coverArt || s.thumb_url || s.heroImage) + ')' }">
+            </div>
             <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" />
             <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
             <p class="small">{{s.artist}} <span *ngIf="s.featuredArtists?.length">• feat. {{s.featuredArtists.join(', ')}}</span>
@@ -30,7 +33,10 @@
         <button class="button" (click)="reload()">Retry</button>
     </div>
     <div class="card-grid" *ngIf="!loading && !error && releases.length">
-        <article class="glass" *ngFor="let s of releases" style="padding:16px;">
+        <article class="glass card-bg" *ngFor="let s of releases" style="padding:16px; position:relative; overflow:hidden;">
+            <div class="card-blur-bg" 
+                [ngStyle]="{ 'background-image': 'url(' + (s.coverArt || s.thumb_url || s.heroImage) + ')' }">
+            </div>
             <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" />
             <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
             <p class="small">{{s.artist}} <span *ngIf="s.featuredArtists?.length">• feat. {{s.featuredArtists.join(', ')}}</span>

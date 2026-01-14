@@ -42,7 +42,10 @@
     <section class="section container">
         <h2>Latest Releases</h2>
         <div class="card-grid">
-            <article class="glass" *ngFor="let s of singles" style="padding:16px;">
+            <article class="glass card-bg" *ngFor="let s of singles" style="padding:16px; position:relative; overflow:hidden;">
+                <div class="card-blur-bg"
+                    [ngStyle]="{ 'background-image': 'url(' + (s.coverArt || s.thumb_url || s.heroImage) + ')' }">
+                </div>
                 <img class="cover" [src]="s.coverArt || s.thumb_url" [alt]="s.title" />
                 <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
                 <p class="small">{{s.artist}} <span *ngIf="s.featuredArtists?.length">• feat.
