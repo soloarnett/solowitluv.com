@@ -63,15 +63,16 @@ export class ReleasesComponent {
     return this.extractYouTubeId(release?.links?.youtubeMusic || release?.preSaveLinks?.youtubeMusic);
   }
 
-  getSafeYouTubeUrl(release: any): SafeResourceUrl {
+  getSafeYouTubeUrl(release: any, section: string = 'main'): SafeResourceUrl {
     const videoId = this.getYouTubeId(release);
-    if (!videoId) return this.sanitizer.bypassSecurityTrustResourceUrl('');
+    if (!videoId || !this.isPlaying(release, section)) {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
+    }
     const url = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&enablejsapi=1`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   togglePlay(release: any, event: Event, section: string = 'main'): void {
-    console.log('togglePlay:', release);
     event.preventDefault();
     event.stopPropagation();
     
@@ -106,5 +107,9 @@ export class ReleasesComponent {
   onPlayVideo(key: string | null): void {
     this.playingKey = key;
     this.cdr.markForCheck();
+  }
+
+  trackByReleaseId(index: number, release: any): any {
+    return release.id || release.title || index;
   }
 }

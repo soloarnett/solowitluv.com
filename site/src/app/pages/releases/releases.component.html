@@ -13,7 +13,7 @@
             <button class="button" (click)="reload()">Retry</button>
         </div>
         <div class="card-grid" *ngIf="!loading && !error && albums.length">
-            <article class="glass card-bg" *ngFor="let s of albums; let i = index"
+            <article class="glass card-bg" *ngFor="let s of albums; let i = index; trackBy: trackByReleaseId"
                 style="padding:16px; position:relative; overflow:hidden;">
                 <!-- every other card gets the 'reverse' class -->
                 <div class="card-blur-bg" [ngClass]="{ 'reverse': i % 2 !== 0 }"
@@ -32,8 +32,8 @@
                             <rect x="6" y="6" width="12" height="12"/>
                         </svg>
                     </button>
-                    <iframe *ngIf="isPlaying(s, 'albums')" class="youtube-player" 
-                            [src]="getSafeYouTubeUrl(s)"
+                    <iframe class="youtube-player" 
+                            [src]="getSafeYouTubeUrl(s, 'albums')"
                             allow="autoplay; encrypted-media" frameborder="0"></iframe>
                 </div>
                 <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
@@ -65,7 +65,7 @@
             <button class="button" (click)="reload()">Retry</button>
         </div>
         <div class="card-grid" *ngIf="!loading && !error && releases.length">
-            <article class="glass card-bg" *ngFor="let s of releases; let i = index"
+            <article class="glass card-bg" *ngFor="let s of releases; let i = index; trackBy: trackByReleaseId"
                 style="padding:16px; position:relative; overflow:hidden;">
                 <!-- every 2nd card gets the 'reverse' class, but every 3rd card gets the 'normal' class, the first card gets nothing -->
                 <div class="card-blur-bg" [ngClass]="{ 'reverse': i % 2 === 0, 'normal': i % 3 === 0 }"
@@ -84,8 +84,8 @@
                             <rect x="6" y="6" width="12" height="12"/>
                         </svg>
                     </button>
-                    <iframe *ngIf="isPlaying(s, 'singles')" class="youtube-player" 
-                            [src]="getSafeYouTubeUrl(s)"
+                    <iframe class="youtube-player" 
+                            [src]="getSafeYouTubeUrl(s, 'singles')"
                             allow="autoplay; encrypted-media" frameborder="0"></iframe>
                 </div>
                 <h3 style="margin:12px 0 4px;">{{s.title}}</h3>

@@ -36,7 +36,9 @@ export class LatestReleasesComponent {
 
   getSafeYouTubeUrl(release: any): SafeResourceUrl {
     const videoId = this.getYouTubeId(release);
-    if (!videoId) return this.sanitizer.bypassSecurityTrustResourceUrl('');
+    if (!videoId || !this.isPlaying(release)) {
+      return this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
+    }
     const url = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&enablejsapi=1`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
@@ -70,5 +72,9 @@ export class LatestReleasesComponent {
     if (!hasYouTube) return true;
     
     return this.isPlaying(release);
+  }
+
+  trackByReleaseId(index: number, release: any): any {
+    return release.id || release.title || index;
   }
 }

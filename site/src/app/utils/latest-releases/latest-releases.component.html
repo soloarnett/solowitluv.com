@@ -6,7 +6,7 @@
         <button class="button" (click)="reload()">Retry</button>
     </div>
     <div class="card-grid" *ngIf="!loading && !error && displayedSingles.length">
-        <article class="glass card-bg" *ngFor="let s of displayedSingles; let i = index"
+            <article class="glass card-bg" *ngFor="let s of displayedSingles; let i = index; trackBy: trackByReleaseId"
             style="padding:16px; position:relative; overflow:hidden;">
             <!-- every 2nd card gets the 'reverse' class, but every 3rd card gets the 'normal' class, the first card gets nothing -->
             <div class="card-blur-bg" [ngClass]="{ 'reverse': i % 2 === 0, 'normal': i % 3 === 0 }"
@@ -25,7 +25,7 @@
                         <rect x="6" y="6" width="12" height="12"/>
                     </svg>
                 </button>
-                <iframe *ngIf="isPlaying(s)" class="youtube-player" 
+                <iframe class="youtube-player" 
                         [src]="getSafeYouTubeUrl(s)"
                         allow="autoplay; encrypted-media" frameborder="0"></iframe>
             </div>
