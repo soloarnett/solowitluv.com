@@ -1,0 +1,32 @@
+<section class="section container">
+    <h2>Latest Releases</h2>
+    <div *ngIf="loading" class="loading" style="text-align:center;padding:16px;">Loading…</div>
+    <div *ngIf="!loading && error" class="error" style="text-align:center;padding:16px;">
+        <p>We couldn’t load releases right now.</p>
+        <button class="button" (click)="reload()">Retry</button>
+    </div>
+    <div class="card-grid" *ngIf="!loading && !error && displayedSingles.length">
+        <article class="glass card-bg" *ngFor="let s of displayedSingles; let i = index"
+            style="padding:16px; position:relative; overflow:hidden;">
+            <!-- every 2nd card gets the 'reverse' class, but every 3rd card gets the 'normal' class, the first card gets nothing -->
+            <div class="card-blur-bg" [ngClass]="{ 'reverse': i % 2 === 0, 'normal': i % 3 === 0 }"
+                [ngStyle]="{ 'background-image': 'url(' + (s.coverArt || s.thumb_url || s.heroImage) + ')' }">
+            </div>
+            <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" />
+            <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
+            <p class="small">{{s.artist}} <span *ngIf="s.featuredArtists?.length">• feat.
+                    {{s.featuredArtists.join(', ')}}</span>
+            </p>
+            <div class="button-row">
+                <a *ngIf="s.preSaveLinks?.appleMusic || s.links?.appleMusic" class="button"
+                    [href]="s.preSaveLinks?.appleMusic || s.links?.appleMusic" target="_blank">Apple</a>
+                <a *ngIf="s.preSaveLinks?.spotify || s.links?.spotify" class="button"
+                    [href]="s.preSaveLinks?.spotify || s.links?.spotify" target="_blank">Spotify</a>
+                <a *ngIf="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" class="button"
+                    [href]="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" target="_blank">YouTube</a>
+                <a *ngIf="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" class="button"
+                    [href]="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" target="_blank">Other</a>
+            </div>
+        </article>
+    </div>
+</section>
