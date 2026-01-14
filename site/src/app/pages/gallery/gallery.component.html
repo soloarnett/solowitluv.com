@@ -1,0 +1,8 @@
+<ng-container *ngIf="images.length > 0">
+    <section class="section container">
+        <h2>Gallery</h2>
+        <div class="card-grid">
+            <img class="cover glass" *ngFor="let img of images" [src]="img.src" [alt]="img.alt" loading="lazy" />
+        </div>
+    </section>
+</ng-container>

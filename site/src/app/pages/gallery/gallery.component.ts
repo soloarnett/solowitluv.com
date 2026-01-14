@@ -7,16 +7,8 @@ import { ContentService } from '../../services/content.service';
   standalone: true,
   selector: 'app-gallery',
   imports: [CommonModule],
-  template: `
-    <section class="section container">
-      <h2>Gallery</h2>
-      <div class="card-grid">
-        <img class="cover glass" *ngFor="let img of images" [src]="img.src" [alt]="img.alt" loading="lazy" />
-      </div>
-    </section>
-  `,
-  styleUrls: ['./gallery.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './gallery.component.html',
+  styleUrls: ['./gallery.component.scss']
 })
 export class GalleryComponent {
   private content = inject(ContentService);

@@ -9,7 +9,7 @@ import { ContentService } from '../../services/content.service';
   imports: [CommonModule],
   templateUrl: './bio.component.html',
   styleUrls: ['./bio.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BioComponent {
   private content = inject(ContentService);
