@@ -1,8 +1,10 @@
 <ng-container *ngIf="latestOnly; else fullReleases">
-    <latest-releases [releases]="latestReleases" [loading]="loading" [error]="error"></latest-releases>
+    <latest-releases [releases]="latestReleases" [loading]="loading" [error]="error" 
+                     [playingKey]="playingKey" (playVideo)="onPlayVideo($event)"></latest-releases>
 </ng-container>
 <ng-template #fullReleases>
-    <latest-releases [releases]="latestReleases" [loading]="loading" [error]="error"></latest-releases>
+    <latest-releases [releases]="latestReleases" [loading]="loading" [error]="error"
+                     [playingKey]="playingKey" (playVideo)="onPlayVideo($event)"></latest-releases>
     <section class="section container">
         <h2>Albums</h2>
         <div *ngIf="loading" class="loading" style="text-align:center;padding:16px;">Loading…</div>
@@ -20,17 +22,17 @@
                 </div>
                 <div class="cover-container">
                     <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" loading="lazy" />
-                    <button *ngIf="getYouTubeId(s)" class="play-button" (click)="togglePlay(s, $event)" 
-                            [class.playing]="isPlaying(s)" 
-                            [attr.aria-label]="isPlaying(s) ? 'Pause' : 'Play'">
-                        <svg *ngIf="!isPlaying(s)" viewBox="0 0 24 24" fill="currentColor">
+                    <button *ngIf="getYouTubeId(s)" class="play-button" (click)="togglePlay(s, $event, 'albums')" 
+                            [class.playing]="isPlaying(s, 'albums')" 
+                            [attr.aria-label]="isPlaying(s, 'albums') ? 'Stop' : 'Play'">
+                        <svg *ngIf="!isPlaying(s, 'albums')" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
-                        <svg *ngIf="isPlaying(s)" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                        <svg *ngIf="isPlaying(s, 'albums')" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="6" y="6" width="12" height="12"/>
                         </svg>
                     </button>
-                    <iframe *ngIf="isPlaying(s)" class="youtube-player" 
+                    <iframe *ngIf="isPlaying(s, 'albums')" class="youtube-player" 
                             [src]="getSafeYouTubeUrl(s)"
                             allow="autoplay; encrypted-media" frameborder="0"></iframe>
                 </div>
@@ -39,15 +41,17 @@
                         {{s.featuredArtists.join(', ')}}</span>
                     <!-- <span *ngIf="s.featured" class="badge">Featured Album</span> -->
                 </p>
-                <div class="button-row">
-                    <a *ngIf="s.preSaveLinks?.appleMusic || s.links?.appleMusic" class="button"
-                        [href]="s.preSaveLinks?.appleMusic || s.links?.appleMusic" target="_blank">Apple</a>
-                    <a *ngIf="s.preSaveLinks?.spotify || s.links?.spotify" class="button"
-                        [href]="s.preSaveLinks?.spotify || s.links?.spotify" target="_blank">Spotify</a>
-                    <a *ngIf="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" class="button"
-                        [href]="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" target="_blank">YouTube</a>
-                    <a *ngIf="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" class="button"
-                        [href]="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" target="_blank">Other</a>
+                <div class="button-row-wrapper" [class.visible]="shouldShowButtons(s, 'albums')">
+                    <div class="button-row">
+                        <a *ngIf="s.preSaveLinks?.appleMusic || s.links?.appleMusic" class="button"
+                            [href]="s.preSaveLinks?.appleMusic || s.links?.appleMusic" target="_blank">Apple</a>
+                        <a *ngIf="s.preSaveLinks?.spotify || s.links?.spotify" class="button"
+                            [href]="s.preSaveLinks?.spotify || s.links?.spotify" target="_blank">Spotify</a>
+                        <a *ngIf="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" class="button"
+                            [href]="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" target="_blank">YouTube</a>
+                        <a *ngIf="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" class="button"
+                            [href]="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" target="_blank">Other</a>
+                    </div>
                 </div>
             </article>
         </div>
@@ -70,17 +74,17 @@
                 </div>
                 <div class="cover-container">
                     <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" loading="lazy" />
-                    <button *ngIf="getYouTubeId(s)" class="play-button" (click)="togglePlay(s, $event)" 
-                            [class.playing]="isPlaying(s)" 
-                            [attr.aria-label]="isPlaying(s) ? 'Pause' : 'Play'">
-                        <svg *ngIf="!isPlaying(s)" viewBox="0 0 24 24" fill="currentColor">
+                    <button *ngIf="getYouTubeId(s)" class="play-button" (click)="togglePlay(s, $event, 'singles')" 
+                            [class.playing]="isPlaying(s, 'singles')" 
+                            [attr.aria-label]="isPlaying(s, 'singles') ? 'Stop' : 'Play'">
+                        <svg *ngIf="!isPlaying(s, 'singles')" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
-                        <svg *ngIf="isPlaying(s)" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                        <svg *ngIf="isPlaying(s, 'singles')" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="6" y="6" width="12" height="12"/>
                         </svg>
                     </button>
-                    <iframe *ngIf="isPlaying(s)" class="youtube-player" 
+                    <iframe *ngIf="isPlaying(s, 'singles')" class="youtube-player" 
                             [src]="getSafeYouTubeUrl(s)"
                             allow="autoplay; encrypted-media" frameborder="0"></iframe>
                 </div>
@@ -88,15 +92,17 @@
                 <p class="small">{{s.artist}} <span *ngIf="s.featuredArtists?.length">• feat.
                         {{s.featuredArtists.join(', ')}}</span>
                 </p>
-                <div class="button-row">
-                    <a *ngIf="s.preSaveLinks?.appleMusic || s.links?.appleMusic" class="button"
-                        [href]="s.preSaveLinks?.appleMusic || s.links?.appleMusic" target="_blank">Apple</a>
-                    <a *ngIf="s.preSaveLinks?.spotify || s.links?.spotify" class="button"
-                        [href]="s.preSaveLinks?.spotify || s.links?.spotify" target="_blank">Spotify</a>
-                    <a *ngIf="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" class="button"
-                        [href]="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" target="_blank">YouTube</a>
-                    <a *ngIf="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" class="button"
-                        [href]="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" target="_blank">Other</a>
+                <div class="button-row-wrapper" [class.visible]="shouldShowButtons(s, 'singles')">
+                    <div class="button-row">
+                        <a *ngIf="s.preSaveLinks?.appleMusic || s.links?.appleMusic" class="button"
+                            [href]="s.preSaveLinks?.appleMusic || s.links?.appleMusic" target="_blank">Apple</a>
+                        <a *ngIf="s.preSaveLinks?.spotify || s.links?.spotify" class="button"
+                            [href]="s.preSaveLinks?.spotify || s.links?.spotify" target="_blank">Spotify</a>
+                        <a *ngIf="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" class="button"
+                            [href]="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" target="_blank">YouTube</a>
+                        <a *ngIf="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" class="button"
+                            [href]="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" target="_blank">Other</a>
+                    </div>
                 </div>
             </article>
         </div>

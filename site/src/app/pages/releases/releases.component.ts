@@ -25,7 +25,7 @@ export class ReleasesComponent {
   albums: any[] = [];
   loading = false;
   error = false;
-  playingVideoId: string | null = null;
+  playingKey: string | null = null;
 
 
   constructor() { this.reload(); }
@@ -70,7 +70,7 @@ export class ReleasesComponent {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
-  togglePlay(release: any, event: Event): void {
+  togglePlay(release: any, event: Event, section: string = 'main'): void {
     console.log('togglePlay:', release);
     event.preventDefault();
     event.stopPropagation();
@@ -78,18 +78,33 @@ export class ReleasesComponent {
     const videoId = this.getYouTubeId(release);
     if (!videoId) return;
 
-    if (this.playingVideoId === videoId) {
+    const key = `${section}-${videoId}`;
+    if (this.playingKey === key) {
       // Stop playing
-      this.playingVideoId = null;
+      this.playingKey = null;
     } else {
       // Start playing
-      this.playingVideoId = videoId;
+      this.playingKey = key;
     }
     this.cdr.markForCheck();
   }
 
-  isPlaying(release: any): boolean {
+  isPlaying(release: any, section: string = 'main'): boolean {
     const videoId = this.getYouTubeId(release);
-    return this.playingVideoId === videoId;
+    const key = `${section}-${videoId}`;
+    return this.playingKey === key;
+  }
+
+  shouldShowButtons(release: any, section: string = 'main'): boolean {
+    // Show buttons if no YouTube link OR currently playing
+    const hasYouTube = !!this.getYouTubeId(release);
+    if (!hasYouTube) return true;
+    
+    return this.isPlaying(release, section);
+  }
+
+  onPlayVideo(key: string | null): void {
+    this.playingKey = key;
+    this.cdr.markForCheck();
   }
 }

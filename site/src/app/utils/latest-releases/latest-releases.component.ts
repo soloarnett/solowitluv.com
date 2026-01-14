@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { InViewAnimationDirective } from 'src/app/directives/in-view.directive';
 
@@ -17,7 +17,8 @@ export class LatestReleasesComponent {
   @Input() releases: any[] = [];
   @Input() loading: boolean = false;
   @Input() error: boolean = false;
-  playingVideoId: string | null = null;
+  @Input() playingKey: string | null = null;
+  @Output() playVideo = new EventEmitter<string | null>();
 
   get displayedSingles() {
     return this.releases ?? []
@@ -47,18 +48,27 @@ export class LatestReleasesComponent {
     const videoId = this.getYouTubeId(release);
     if (!videoId) return;
 
-    if (this.playingVideoId === videoId) {
+    const key = `latest-${videoId}`;
+    if (this.playingKey === key) {
       // Stop playing
-      this.playingVideoId = null;
+      this.playVideo.emit(null);
     } else {
       // Start playing
-      this.playingVideoId = videoId;
+      this.playVideo.emit(key);
     }
-    this.cdr.markForCheck();
   }
 
   isPlaying(release: any): boolean {
     const videoId = this.getYouTubeId(release);
-    return this.playingVideoId === videoId;
+    const key = `latest-${videoId}`;
+    return this.playingKey === key;
+  }
+
+  shouldShowButtons(release: any): boolean {
+    // Show buttons if no YouTube link OR currently playing
+    const hasYouTube = !!this.getYouTubeId(release);
+    if (!hasYouTube) return true;
+    
+    return this.isPlaying(release);
   }
 }

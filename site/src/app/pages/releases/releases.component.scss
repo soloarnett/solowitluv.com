@@ -20,11 +20,36 @@ section {
     }
 }
 
+.button-row-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease-out, opacity 0.4s ease-out, margin-top 0.4s ease-out;
+    margin-top: 0;
+
+    &.visible {
+        max-height: 200px;
+        opacity: 1;
+        margin-top: 10px;
+    }
+}
+
 .button-row {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    margin-top: 10px;
+    animation: fadeSlideIn 0.4s ease-out;
+    
+    @keyframes fadeSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 }
 
 .cover-container {
