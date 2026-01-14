@@ -17,7 +17,12 @@ export class HomeComponent {
     this.content.getReleases().subscribe((data:any)=>{
       const releases = data.releases || [];
       this.featured = releases.find((r:any) => r.type === 'album' && r.featured);
-      this.singles = releases.filter((r:any) => r.type === 'single');
+      console.log('featured:', this.featured);
+      this.singles = releases
+        .sort((a:any, b:any) => (b.releaseDate || '').localeCompare(a.releaseDate || ''))
+        .slice(0, 8);
+
+      console.log('singles:', this.singles);
     });
   }
 }

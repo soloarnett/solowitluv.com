@@ -12,5 +12,7 @@ import { ContentService } from '../../services/content.service';
 export class ShowsComponent {
   private content = inject(ContentService);
   shows: any[] = [];
-  constructor(){ this.content.getShows().subscribe((d:any)=> this.shows = d.upcoming || []); }
+  constructor(){
+    this.content.getShows().subscribe((shows: any[]) => this.shows = shows);
+  }
 }

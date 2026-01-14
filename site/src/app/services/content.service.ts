@@ -90,7 +90,15 @@ export class ContentService {
     );
   }
 
-  getShows()   { return this.http.get<any>('content/shows.json'); }
+  /** Lambda/API for shows, fallback to legacy JSON */
+  getShows(): Observable<any[]> {
+    // TODO: Replace with actual API base URL for shows Lambda
+    const SHOWS_API_BASE_URL = 'https://hsef0sw0pe.execute-api.us-east-1.amazonaws.com';
+    return this.http.get<any>(`${SHOWS_API_BASE_URL}/shows`).pipe(
+      map(res => Array.isArray(res) ? res : (res.items || res.body ? JSON.parse(res.body) : [])),
+      catchError(() => this.http.get<any>('content/shows.json').pipe(map(d => d?.upcoming ?? [])))
+    );
+  }
   getBio()     { return this.http.get<any>('content/bio.json'); }
   getGallery() { return this.http.get<any>('content/gallery.json'); }
 }

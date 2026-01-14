@@ -15,8 +15,11 @@ resource "aws_iam_role" "release_api_role" {
 
 data "aws_iam_policy_document" "release_api_policy" {
   statement {
-    actions   = ["dynamodb:Scan", "dynamodb:Query", "dynamodb:GetItem"]
-    resources = [aws_dynamodb_table.releases.arn]
+    actions = ["dynamodb:Scan", "dynamodb:Query", "dynamodb:GetItem"]
+    resources = [
+      aws_dynamodb_table.releases.arn,
+      aws_dynamodb_table.shows.arn
+    ]
   }
   statement {
     actions   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]

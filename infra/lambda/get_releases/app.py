@@ -6,6 +6,7 @@ from boto3.dynamodb.conditions import Attr
 
 ddb = boto3.resource("dynamodb")
 
+
 def build_url(domain: str, key: str, proto: str = "https") -> str:
     domain = domain.lstrip("https://").lstrip("http://")
     if key.startswith("/"):
@@ -14,15 +15,28 @@ def build_url(domain: str, key: str, proto: str = "https") -> str:
 
 
 def lambda_handler(event, context):
-    table_name = os.environ.get("TABLE_NAME", "releases")
+    table_name = os.environ.get("TABLE_NAME", "solowitluv-releases")
     domain = os.environ.get("CLOUDFRONT_DOMAIN", "")
     proto = os.environ.get("IMAGE_PROTOCOL", "https")
     allowed_status = os.environ.get("ALLOWED_STATUS", "").strip()
+    print(f"Using table: {table_name}")
+    print(f"Using domain: {domain}")
+    print(f"Using protocol: {proto}")
+    print(f"Using allowed status: {allowed_status}")
 
     table = ddb.Table(table_name)
 
-    # Full table scan for simplicity
+    # Full table scan for simplicity; switch to Query + GSI if filtering/sorting at scale
     scan_kwargs = {}
+    # if allowed_status:
+    #     statuses = [s.strip() for s in allowed_status.split(",") if s.strip()]
+    #     if statuses:
+    #         filt = None
+    #         for s in statuses:
+    #             cond = Attr("status").eq(s)
+    #             filt = cond if filt is None else (filt | cond)
+    #         scan_kwargs["FilterExpression"] = filt
+
     items = []
     start_key = None
     while True:
@@ -34,18 +48,16 @@ def lambda_handler(event, context):
         if not start_key:
             break
 
-    # Sort: album(s) first, then singles
-    items.sort(key=lambda x: (0 if x.get("type") == "album" else 1, x.get("releaseDate", "")), reverse=True)
-
-    # Normalize + map image URLs (if present)
+    # Normalize + map image URLs
     out = []
+    print((f"Found {len(items)} items"))
     for it in items:
-        # For compatibility, add image_url/thumb_url if heroImage/coverArt present
-        if domain:
-            if it.get("heroImage"):
-                it["image_url"] = build_url(domain, it["heroImage"], proto)
-            if it.get("coverArt"):
-                it["thumb_url"] = build_url(domain, it["coverArt"], proto)
+        image_key = it.get("image_key")
+        thumb_key = it.get("thumb_key")
+        if domain and image_key:
+            it["image_url"] = build_url(domain, image_key, proto)
+        if domain and thumb_key:
+            it["thumb_url"] = build_url(domain, thumb_key, proto)
         out.append(it)
 
     body = {"count": len(out), "items": out}

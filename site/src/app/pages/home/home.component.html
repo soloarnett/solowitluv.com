@@ -16,9 +16,9 @@
                 <a class="button" *ngIf="featured?.preSaveLinks?.youtubeMusic || featured?.links?.youtubeMusic"
                     [href]="featured?.preSaveLinks?.youtubeMusic || featured?.links?.youtubeMusic"
                     target="_blank">YouTube Music</a>
-                <a class="button" *ngIf="featured?.preSaveLinks?.allPlatforms || featured?.links?.allPlatforms"
+                <!-- <a class="button" *ngIf="featured?.preSaveLinks?.allPlatforms || featured?.links?.allPlatforms"
                     [href]="featured?.preSaveLinks?.allPlatforms || featured?.links?.allPlatforms" target="_blank">All
-                    Platforms</a>
+                    Platforms</a> -->
             </div>
         </div>
     </ng-container>
@@ -54,7 +54,7 @@
                     <a *ngIf="s.links?.youtubeMusic" class="button" [href]="s.links.youtubeMusic"
                         target="_blank">YouTube</a>
                     <a *ngIf="s.links?.allPlatforms" class="button" [href]="s.links.allPlatforms"
-                        target="_blank">All</a>
+                        target="_blank">Other</a>
                 </div>
             </article>
         </div>

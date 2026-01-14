@@ -12,6 +12,7 @@ import { ContentService } from '../../services/content.service';
 export class ReleasesComponent {
   private content = inject(ContentService);
   releases: any[] = [];
+  albums: any[] = [];
   loading = false;
   error = false;
 
@@ -21,10 +22,15 @@ export class ReleasesComponent {
     this.loading = true;
     this.error = false;
     this.content.getReleases().subscribe({
-      next: (d:any) => {
-        this.releases = d?.releases ?? [];
+      next: (d: any) => {
+        const all = d?.releases ?? [];
+        // Separate albums and other releases, order by releaseDate descending
+        this.albums = all.filter((r: any) => r.type === 'album')
+          .sort((a: any, b: any) => (b.releaseDate || '').localeCompare(a.releaseDate || ''));
+        this.releases = all.filter((r: any) => r.type !== 'album')
+          .sort((a: any, b: any) => (b.releaseDate || '').localeCompare(a.releaseDate || ''));
         this.loading = false;
-        this.error = this.releases.length === 0;
+        this.error = all.length === 0;
       },
       error: () => { this.loading = false; this.error = true; }
     });
