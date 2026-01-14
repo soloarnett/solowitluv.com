@@ -55,22 +55,64 @@ body {
   margin: 0;
   color: var(--text);
 
-  background-image:
-    radial-gradient(1200px 800px at 20% -10%, rgba(255, 255, 255, 0.08), transparent 60%),
-    radial-gradient(1000px 700px at 110% 20%, rgba(138, 180, 255, 0.15), transparent 50%),
-    linear-gradient(to bottom,
-      var(--bg-dark) 0%,
-      var(--bg-mid) 20%,
-      var(--bg-light) 50%,
-      var(--bg-mid) 80%,
-      var(--bg-dark) 100%);
+  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  /* Animated, multi-color gradient background with vendor prefixes */
+  background: radial-gradient(circle, #1f0e04, #030b23, #000, #030b23, #1f0e04);
+  background: -webkit-radial-gradient(circle, #1f0e04, #030b23, #000, #030b23, #1f0e04);
+  background: -moz-radial-gradient(circle, #1f0e04, #030b23, #000, #030b23, #1f0e04);
+  background-size: 400% 400%;
+  -webkit-background-size: 400% 400%;
+  -moz-background-size: 400% 400%;
+  animation: gradientShift 24s ease-in-out infinite;
+  -webkit-animation: gradientShift 24s ease-in-out infinite;
+  -moz-animation: gradientShift 24s ease-in-out infinite;
+  background-repeat: no-repeat;
+/* Vendor-prefixed keyframes for gradient animation */
+@-webkit-keyframes gradientShift {
+  0% {
+    background-position: 0% 40%;
+  }
+  50% {
+    background-position: 100% 60%;
+  }
+  100% {
+    background-position: 0% 40%;
+  }
+}
+@-moz-keyframes gradientShift {
+  0% {
+    background-position: 0% 40%;
+  }
+  50% {
+    background-position: 100% 60%;
+  }
+  100% {
+    background-position: 0% 40%;
+  }
+}
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 40%;
+  }
+  50% {
+    background-position: 100% 60%;
+  }
+  100% {
+    background-position: 0% 40%;
+  }
+}
 
-  background-repeat: no-repeat, no-repeat, repeat-y;
-  background-size: auto, auto, 100% 1600px;
-  /* taller tile so transition is smoother */
-  background-position: top left, top left, 0 0;
-
-  font: 400 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font: 400 16px/1.6 system-ui,
+  -apple-system,
+  Segoe UI,
+  Roboto,
+  Helvetica,
+  Arial,
+  "Apple Color Emoji",
+  "Segoe UI Emoji";
 }
 
 
