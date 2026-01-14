@@ -46,19 +46,12 @@ section {
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: 100% 100%;
     -webkit-backdrop-filter: blur(20px);
+}
 
+.glass .card-blur-bg.animate {
     /* Animation for slow scale and pan */
-
-    /*
-     * To alternate animation direction for different cards, add a class in the template:
-     * <div class="card-blur-bg reverse"></div>
-     * and use the selector below.
-     */
     animation: cardBlurPanZoom 32s ease-in-out infinite alternate;
     -webkit-animation: cardBlurPanZoom 32s ease-in-out infinite alternate;
-
-    //apply to every other child
-
 }
 
 .glass .card-blur-bg.reverse {

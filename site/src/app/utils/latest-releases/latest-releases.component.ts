@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { InViewAnimationDirective } from 'src/app/directives/in-view.directive';
 
 @Component({
   selector: 'latest-releases',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, InViewAnimationDirective],
   templateUrl: './latest-releases.component.html',
   styleUrl: './latest-releases.component.scss'
 })

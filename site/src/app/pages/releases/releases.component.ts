@@ -2,11 +2,12 @@ import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LatestReleasesComponent } from '../../utils/latest-releases/latest-releases.component';
 import { ContentService } from '../../services/content.service';
+import { InViewAnimationDirective } from 'src/app/directives/in-view.directive';
 
 @Component({
   standalone: true,
   selector: 'app-releases',
-  imports: [CommonModule, LatestReleasesComponent],
+  imports: [CommonModule, LatestReleasesComponent, InViewAnimationDirective],
   templateUrl: './releases.component.html',
   styleUrls: ['./releases.component.scss']
 })
