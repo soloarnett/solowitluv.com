@@ -27,6 +27,68 @@ section {
     margin-top: 10px;
 }
 
+.cover-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+    padding: 0;
+
+    svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.9);
+        border-color: white;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    &:active {
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+
+    &.playing {
+        background: rgba(255, 255, 255, 0.9);
+        color: black;
+        border-color: black;
+
+        &:hover {
+            background: white;
+        }
+    }
+}
+
+.youtube-player {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
 .glass .card-blur-bg {
     width: 100%;
     height: 100%;

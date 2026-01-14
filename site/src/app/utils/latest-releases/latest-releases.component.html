@@ -13,7 +13,22 @@
                 [ngStyle]="{ 'background-image': 'url(' + (s.coverArt || s.thumb_url || s.heroImage) + ')' }"
                 inViewAnimation>
             </div>
-            <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" loading="lazy" />
+            <div class="cover-container">
+                <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" loading="lazy" />
+                <button *ngIf="getYouTubeId(s)" class="play-button" (click)="togglePlay(s, $event)" 
+                        [class.playing]="isPlaying(s)" 
+                        [attr.aria-label]="isPlaying(s) ? 'Pause' : 'Play'">
+                    <svg *ngIf="!isPlaying(s)" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <svg *ngIf="isPlaying(s)" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                    </svg>
+                </button>
+                <iframe *ngIf="isPlaying(s)" class="youtube-player" 
+                        [src]="getSafeYouTubeUrl(s)"
+                        allow="autoplay; encrypted-media" frameborder="0"></iframe>
+            </div>
             <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
             <p class="small">{{s.artist}} <span *ngIf="s.featuredArtists?.length">• feat.
                     {{s.featuredArtists.join(', ')}}</span>
