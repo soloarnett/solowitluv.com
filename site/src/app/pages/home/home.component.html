@@ -3,22 +3,30 @@
     <div class="hero-bg" [style.background-image]="featured?.heroImage ? 'url(' + featured.heroImage + ')' : 'none'">
     </div>
     <ng-container *ngIf="featured">
-        <div class="hero-inner container glass">
+        <div class="hero-section-content">
+            <div class="hero-inner container glass hero-album-art-container">
+                <!-- insert featured image here -->
+                <img class="hero-album-art" *ngIf="featured?.heroImage"
+                    [src]="featured?.coverArt || featured?.thumb_url || featured?.heroImage"
+                    [alt]="featured?.title || 'Featured Image'" loading="lazy" />
+            </div>
+            <div class="hero-inner container glass hero-details-container">
 
-            <h1>{{featured?.title || 'Album coming soon'}}</h1>
-            <p class="small">{{featured?.tagline}}</p>
-            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
-                <a class="button" *ngIf="featured?.preSaveLinks?.appleMusic || featured?.links?.appleMusic"
-                    [href]="featured?.preSaveLinks?.appleMusic || featured?.links?.appleMusic" target="_blank">Apple
-                    Music</a>
-                <a class="button" *ngIf="featured?.preSaveLinks?.spotify || featured?.links?.spotify"
-                    [href]="featured?.preSaveLinks?.spotify || featured?.links?.spotify" target="_blank">Spotify</a>
-                <a class="button" *ngIf="featured?.preSaveLinks?.youtubeMusic || featured?.links?.youtubeMusic"
-                    [href]="featured?.preSaveLinks?.youtubeMusic || featured?.links?.youtubeMusic"
-                    target="_blank">YouTube Music</a>
-                <!-- <a class="button" *ngIf="featured?.preSaveLinks?.allPlatforms || featured?.links?.allPlatforms"
+                <h1>{{featured?.title || 'Album coming soon'}}</h1>
+                <p class="small">{{featured?.tagline}}</p>
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+                    <a class="button" *ngIf="featured?.preSaveLinks?.appleMusic || featured?.links?.appleMusic"
+                        [href]="featured?.preSaveLinks?.appleMusic || featured?.links?.appleMusic" target="_blank">Apple
+                        Music</a>
+                    <a class="button" *ngIf="featured?.preSaveLinks?.spotify || featured?.links?.spotify"
+                        [href]="featured?.preSaveLinks?.spotify || featured?.links?.spotify" target="_blank">Spotify</a>
+                    <a class="button" *ngIf="featured?.preSaveLinks?.youtubeMusic || featured?.links?.youtubeMusic"
+                        [href]="featured?.preSaveLinks?.youtubeMusic || featured?.links?.youtubeMusic"
+                        target="_blank">YouTube Music</a>
+                    <!-- <a class="button" *ngIf="featured?.preSaveLinks?.allPlatforms || featured?.links?.allPlatforms"
                     [href]="featured?.preSaveLinks?.allPlatforms || featured?.links?.allPlatforms" target="_blank">All
                     Platforms</a> -->
+                </div>
             </div>
         </div>
     </ng-container>
