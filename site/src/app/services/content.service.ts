@@ -1,7 +1,7 @@
 // site/src/app/services/content.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, Observable } from 'rxjs';
+import { of, Observable, BehaviorSubject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';   // <-- important: use /operators to avoid import confusion
 import { USE_RELEASE_API, RELEASE_API_BASE_URL } from '../config';
 
@@ -78,25 +78,63 @@ export class ContentService {
   }
 
   /** Public API that your component calls. Prefers API, falls back to legacy on error. */
+  private releasesSubject = new BehaviorSubject<ReleasesResponse | null>(null);
   getReleases(): Observable<ReleasesResponse> {
-    if (!USE_RELEASE_API) {
-      return this.getReleasesLegacy$();
+    // 1. Emit cache first
+    const cacheKey = 'releases-cache-v1';
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (parsed && parsed.releases) {
+          this.releasesSubject.next(parsed);
+        }
+      } catch {}
     }
-    return this.getReleasesApi$().pipe(
-      // Any API error -> fall back to legacy file
-      catchError(() => this.getReleasesLegacy$()),
-      // Guard against any odd nulls
+    // 2. Fetch fresh, update cache and subject if changed
+    const fetch$ = (!USE_RELEASE_API ? this.getReleasesLegacy$() : this.getReleasesApi$().pipe(catchError(() => this.getReleasesLegacy$()))).pipe(
       map(res => res ?? { releases: [] })
+    );
+    fetch$.subscribe((fresh) => {
+      const prev = this.releasesSubject.value;
+      if (!prev || JSON.stringify(prev) !== JSON.stringify(fresh)) {
+        localStorage.setItem(cacheKey, JSON.stringify(fresh));
+        this.releasesSubject.next(fresh);
+      }
+    });
+    // 3. Return observable (will emit cache first, then update if new)
+    return this.releasesSubject.asObservable().pipe(
+      map(val => val ?? { releases: [] })
     );
   }
 
-  /** Lambda/API for shows, fallback to legacy JSON */
+  /** Lambda/API for shows, fallback to legacy JSON, cache-first */
+  private showsSubject = new BehaviorSubject<any[] | null>(null);
   getShows(): Observable<any[]> {
-    // TODO: Replace with actual API base URL for shows Lambda
+    const cacheKey = 'shows-cache-v1';
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed)) {
+          this.showsSubject.next(parsed);
+        }
+      } catch {}
+    }
     const SHOWS_API_BASE_URL = 'https://hsef0sw0pe.execute-api.us-east-1.amazonaws.com';
-    return this.http.get<any>(`${SHOWS_API_BASE_URL}/shows`).pipe(
+    const fetch$ = this.http.get<any>(`${SHOWS_API_BASE_URL}/shows`).pipe(
       map(res => Array.isArray(res) ? res : (res.items || res.body ? JSON.parse(res.body) : [])),
       catchError(() => this.http.get<any>('content/shows.json').pipe(map(d => d?.upcoming ?? [])))
+    );
+    fetch$.subscribe((fresh) => {
+      const prev = this.showsSubject.value;
+      if (!prev || JSON.stringify(prev) !== JSON.stringify(fresh)) {
+        localStorage.setItem(cacheKey, JSON.stringify(fresh));
+        this.showsSubject.next(fresh);
+      }
+    });
+    return this.showsSubject.asObservable().pipe(
+      map(val => val ?? [])
     );
   }
   getBio()     { return this.http.get<any>('content/bio.json'); }
