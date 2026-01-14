@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { PlaybackService } from '../../services/playback.service';
 import { InViewAnimationDirective } from 'src/app/directives/in-view.directive';
 
 @Component({
@@ -14,13 +15,10 @@ import { InViewAnimationDirective } from 'src/app/directives/in-view.directive';
 export class LatestReleasesComponent {
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
+  private playback = inject(PlaybackService);
   @Input() releases: any[] = [];
   @Input() loading: boolean = false;
   @Input() error: boolean = false;
-  @Input() playingKey: string | null = null;
-  @Output() playVideo = new EventEmitter<string | null>();
-  failedVideos = new Set<string>();
-  retryAttempts = new Map<string, number>();
 
   get displayedSingles() {
     return this.releases ?? []
@@ -36,17 +34,6 @@ export class LatestReleasesComponent {
     return this.extractYouTubeId(release?.links?.youtubeMusic || release?.preSaveLinks?.youtubeMusic);
   }
 
-  getSafeYouTubeUrl(release: any): SafeResourceUrl | null {
-    const videoId = this.getYouTubeId(release);
-    if (!videoId || !this.isPlaying(release)) {
-      return null;
-    }
-    const key = `latest-${videoId}`;
-    const retryCount = this.retryAttempts.get(key) || 0;
-    const url = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&enablejsapi=1&retry=${retryCount}`;
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
-  }
-
   togglePlay(release: any, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
@@ -54,20 +41,12 @@ export class LatestReleasesComponent {
     const videoId = this.getYouTubeId(release);
     if (!videoId) return;
 
-    const key = `latest-${videoId}`;
-    if (this.playingKey === key) {
-      // Stop playing
-      this.playVideo.emit(null);
-    } else {
-      // Start playing
-      this.playVideo.emit(key);
-    }
+    this.playback.toggle(release, 'latest');
+    this.cdr.markForCheck();
   }
 
   isPlaying(release: any): boolean {
-    const videoId = this.getYouTubeId(release);
-    const key = `latest-${videoId}`;
-    return this.playingKey === key;
+    return this.playback.isPlaying(release, 'latest');
   }
 
   shouldShowButtons(release: any): boolean {
@@ -80,58 +59,5 @@ export class LatestReleasesComponent {
 
   trackByReleaseId(index: number, release: any): any {
     return release.id || release.title || index;
-  }
-
-  onIframeLoad(release: any, event: Event): void {
-    const videoId = this.getYouTubeId(release);
-    if (!videoId) return;
-    
-    const key = `latest-${videoId}`;
-    const iframe = event.target as HTMLIFrameElement;
-    
-    if (iframe.src && iframe.src.includes('youtube.com') && this.isPlaying(release)) {
-      if (this.failedVideos.has(key)) {
-        this.failedVideos.delete(key);
-      }
-    }
-  }
-
-  onIframeError(release: any, event: Event): void {
-    const videoId = this.getYouTubeId(release);
-    if (!videoId) return;
-    
-    const key = `latest-${videoId}`;
-    if (!this.failedVideos.has(key)) {
-      this.failedVideos.add(key);
-    }
-  }
-
-  retryVideo(release: any, event: Event): void {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    const videoId = this.getYouTubeId(release);
-    if (!videoId) return;
-    
-    const key = `latest-${videoId}`;
-    const currentRetries = this.retryAttempts.get(key) || 0;
-    
-    if (currentRetries < 3) {
-      this.retryAttempts.set(key, currentRetries + 1);
-      this.failedVideos.delete(key);
-      
-      this.playVideo.emit(null);
-      
-      setTimeout(() => {
-        this.playVideo.emit(key);
-      }, 100);
-    }
-  }
-
-  hasVideoFailed(release: any): boolean {
-    const videoId = this.getYouTubeId(release);
-    if (!videoId) return false;
-    const key = `latest-${videoId}`;
-    return this.failedVideos.has(key);
   }
 }

@@ -1,10 +1,8 @@
 <ng-container *ngIf="latestOnly; else fullReleases">
-    <latest-releases [releases]="latestReleases" [loading]="loading" [error]="error" 
-                     [playingKey]="playingKey" (playVideo)="onPlayVideo($event)"></latest-releases>
+    <latest-releases [releases]="latestReleases" [loading]="loading" [error]="error"></latest-releases>
 </ng-container>
 <ng-template #fullReleases>
-    <latest-releases [releases]="latestReleases" [loading]="loading" [error]="error"
-                     [playingKey]="playingKey" (playVideo)="onPlayVideo($event)"></latest-releases>
+    <latest-releases [releases]="latestReleases" [loading]="loading" [error]="error"></latest-releases>
     <section class="section container">
         <h2>Albums</h2>
         <div *ngIf="loading" class="loading" style="text-align:center;padding:16px;">Loading…</div>
@@ -32,10 +30,6 @@
                             <rect x="6" y="6" width="12" height="12"/>
                         </svg>
                     </button>
-                    <iframe *ngIf="isPlaying(s, 'albums')" 
-                            class="youtube-player" 
-                            [src]="getSafeYouTubeUrl(s, 'albums')!"
-                            allow="autoplay; encrypted-media" frameborder="0"></iframe>
                 </div>
                 <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
                 <p class="small">{{s.artist}} <span *ngIf="s.featuredArtists?.length">• feat.
@@ -85,10 +79,6 @@
                             <rect x="6" y="6" width="12" height="12"/>
                         </svg>
                     </button>
-                    <iframe *ngIf="isPlaying(s, 'singles')" 
-                            class="youtube-player" 
-                            [src]="getSafeYouTubeUrl(s, 'singles')!"
-                            allow="autoplay; encrypted-media" frameborder="0"></iframe>
                 </div>
                 <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
                 <p class="small">{{s.artist}} <span *ngIf="s.featuredArtists?.length">• feat.

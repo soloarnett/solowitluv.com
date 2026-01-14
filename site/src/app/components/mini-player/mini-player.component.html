@@ -1,0 +1,72 @@
+<div class="mini-player glass" *ngIf="isVisible">
+  <div class="mini-player-content">
+    <!-- Cover Art -->
+    <div class="cover-art">
+      <img *ngIf="coverImage" [src]="coverImage" [alt]="releaseTitle">
+      <div class="play-overlay" (click)="togglePlay()">
+        <i class="fas" [ngClass]="currentState.isPlaying ? 'fa-pause' : 'fa-play'"></i>
+      </div>
+    </div>
+
+    <!-- Track Info -->
+    <div class="track-info">
+      <div class="track-title">{{ releaseTitle }}</div>
+      <div class="track-artist" *ngIf="artistName">{{ artistName }}</div>
+    </div>
+
+    <!-- Hidden YouTube Player -->
+    <iframe
+      *ngIf="safeYouTubeUrl && !failedToLoad"
+      [src]="safeYouTubeUrl"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+      class="hidden-player"
+      (load)="onIframeLoad($event)"
+      (error)="onIframeError($event)"
+    ></iframe>
+
+    <!-- Error State -->
+    <div class="error-message" *ngIf="failedToLoad">
+      <span>Failed to load</span>
+      <button (click)="retry()" *ngIf="retryCount < 3">Retry</button>
+    </div>
+
+    <!-- Streaming Links -->
+    <div class="streaming-links">
+      <a *ngIf="getStreamingLink('spotify')" 
+         [href]="getStreamingLink('spotify')" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="streaming-link">
+        <i class="fab fa-spotify"></i>
+      </a>
+      <a *ngIf="getStreamingLink('appleMusic')" 
+         [href]="getStreamingLink('appleMusic')" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="streaming-link">
+        <i class="fab fa-apple"></i>
+      </a>
+      <a *ngIf="getStreamingLink('youtubeMusic')" 
+         [href]="getStreamingLink('youtubeMusic')" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="streaming-link">
+        <i class="fab fa-youtube"></i>
+      </a>
+      <a *ngIf="getStreamingLink('soundcloud')" 
+         [href]="getStreamingLink('soundcloud')" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="streaming-link">
+        <i class="fab fa-soundcloud"></i>
+      </a>
+    </div>
+
+    <!-- Close Button -->
+    <button class="close-btn" (click)="close()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>
