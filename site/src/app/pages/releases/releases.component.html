@@ -9,18 +9,17 @@
     </div>
 
     <div class="card-grid" *ngIf="!loading && !error">
-        <article class="glass" *ngFor="let s of singles" style="padding:16px;">
-            <img class="cover" [src]="s.coverArt" [alt]="s.title" />
+        <article class="glass" *ngFor="let s of releases" style="padding:16px;">
+            <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" />
             <h3 style="margin:12px 0 4px;">{{s.title}}</h3>
-            <p class="small">{{s.artist}} <span *ngIf="s.featuredArtists?.length">• feat. {{s.featuredArtists.join(',
-                    ')}}</span></p>
-
+            <p class="small">{{s.artist}} <span *ngIf="s.featuredArtists?.length">• feat. {{s.featuredArtists.join(', ')}}</span>
+                <span *ngIf="s.type === 'album' && s.featured" class="badge">Featured Album</span>
+            </p>
             <div class="button-row">
-                <a *ngIf="s.links?.appleMusic" class="button" [href]="s.links.appleMusic" target="_blank">Apple</a>
-                <a *ngIf="s.links?.spotify" class="button" [href]="s.links.spotify" target="_blank">Spotify</a>
-                <a *ngIf="s.links?.youtubeMusic" class="button" [href]="s.links.youtubeMusic"
-                    target="_blank">YouTube</a>
-                <a *ngIf="s.links?.allPlatforms" class="button" [href]="s.links.allPlatforms" target="_blank">All</a>
+                <a *ngIf="s.preSaveLinks?.appleMusic || s.links?.appleMusic" class="button" [href]="s.preSaveLinks?.appleMusic || s.links?.appleMusic" target="_blank">Apple</a>
+                <a *ngIf="s.preSaveLinks?.spotify || s.links?.spotify" class="button" [href]="s.preSaveLinks?.spotify || s.links?.spotify" target="_blank">Spotify</a>
+                <a *ngIf="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" class="button" [href]="s.preSaveLinks?.youtubeMusic || s.links?.youtubeMusic" target="_blank">YouTube</a>
+                <a *ngIf="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" class="button" [href]="s.preSaveLinks?.allPlatforms || s.links?.allPlatforms" target="_blank">All</a>
             </div>
         </article>
     </div>

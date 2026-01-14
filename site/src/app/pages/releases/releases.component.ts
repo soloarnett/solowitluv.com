@@ -11,7 +11,7 @@ import { ContentService } from '../../services/content.service';
 })
 export class ReleasesComponent {
   private content = inject(ContentService);
-  singles: any[] = [];
+  releases: any[] = [];
   loading = false;
   error = false;
 
@@ -22,10 +22,9 @@ export class ReleasesComponent {
     this.error = false;
     this.content.getReleases().subscribe({
       next: (d:any) => {
-        this.singles = d?.singles ?? [];
+        this.releases = d?.releases ?? [];
         this.loading = false;
-        // If API was enabled but provided nothing and the fallback also empty, show Retry
-        this.error = this.singles.length === 0;
+        this.error = this.releases.length === 0;
       },
       error: () => { this.loading = false; this.error = true; }
     });

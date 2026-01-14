@@ -15,7 +15,9 @@ export class HomeComponent {
   featured: any; singles: any[] = [];
   constructor(){
     this.content.getReleases().subscribe((data:any)=>{
-      this.featured = data.featuredAlbum; this.singles = data.singles || [];
+      const releases = data.releases || [];
+      this.featured = releases.find((r:any) => r.type === 'album' && r.featured);
+      this.singles = releases.filter((r:any) => r.type === 'single');
     });
   }
 }

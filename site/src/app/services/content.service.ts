@@ -8,19 +8,32 @@ import { USE_RELEASE_API, RELEASE_API_BASE_URL } from '../config';
 export interface ReleaseCard {
   id: string;
   title: string;
+  type?: 'single' | 'album';
+  featured?: boolean;
+  tagline?: string;
+  heroImage?: string;
+  preSaveLinks?: {
+    appleMusic?: string;
+    spotify?: string;
+    youtubeMusic?: string;
+    allPlatforms?: string;
+  };
   artist?: string;
   featuredArtists?: string[];
-  coverArt: string;
-  links: {
+  coverArt?: string;
+  links?: {
     spotify?: string;
     appleMusic?: string;
     youtubeMusic?: string;
     allPlatforms?: string;
   };
+  releaseDate?: string;
+  image_url?: string;
+  thumb_url?: string;
 }
 
 export interface ReleasesResponse {
-  singles: ReleaseCard[];
+  releases: ReleaseCard[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -29,10 +42,9 @@ export class ContentService {
 
   /** Legacy JSON (current site behavior) */
   private getReleasesLegacy$(): Observable<ReleasesResponse> {
-    return this.http.get<any>('content/releases.json')
-    // .pipe(
-    //   map(d => ({ singles: d?.singles ?? [] } as ReleasesResponse))
-    // );
+    return this.http.get<any>('content/releases.json').pipe(
+      map(d => ({ releases: d?.releases ?? [] } as ReleasesResponse))
+    );
   }
 
   /** Lambda/API -> normalized to the component’s expected shape */
@@ -42,20 +54,25 @@ export class ContentService {
       .pipe(
         map(api => {
           const items = api?.items ?? [];
-          const singles: ReleaseCard[] = items.map(it => ({
+          // Directly map to ReleaseCard[]
+          const releases: ReleaseCard[] = items.map(it => ({
+            ...it,
             id: it.id,
             title: it.title,
+            type: it.type,
+            featured: it.featured,
+            tagline: it.tagline,
+            heroImage: it.heroImage,
+            preSaveLinks: it.preSaveLinks,
             artist: it.artist ?? 'Solo Wit Luv',
             featuredArtists: it.featuredArtists ?? [],
-            coverArt: it.thumb_url || it.image_url || it.image_key || '',
-            links: {
-              spotify:      it.platforms?.find((p: any) => p.name?.toLowerCase() === 'spotify')?.url,
-              appleMusic:   it.platforms?.find((p: any) => p.name?.toLowerCase().includes('apple'))?.url,
-              youtubeMusic: it.platforms?.find((p: any) => p.name?.toLowerCase().includes('youtube'))?.url,
-              allPlatforms: it.platforms?.find((p: any) => p.name?.toLowerCase().includes('all'))?.url,
-            }
+            coverArt: it.coverArt ?? it.thumb_url ?? it.image_url ?? '',
+            links: it.links ?? {},
+            releaseDate: it.releaseDate,
+            image_url: it.image_url,
+            thumb_url: it.thumb_url,
           }));
-          return { singles };
+          return { releases };
         })
       );
   }
@@ -69,7 +86,7 @@ export class ContentService {
       // Any API error -> fall back to legacy file
       catchError(() => this.getReleasesLegacy$()),
       // Guard against any odd nulls
-      map(res => res ?? { singles: [] })
+      map(res => res ?? { releases: [] })
     );
   }
 

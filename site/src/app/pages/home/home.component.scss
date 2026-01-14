@@ -12,13 +12,20 @@
     @media (max-width: 600px) {
         flex-direction: column-reverse;
     }
+
+    // @media (min-width: 601px) {
+    //     min-width: 50%;
+    //     width: 50%;
+    //     max-width: 1000px;
+    // }
 }
 
 .small-container {
     margin-bottom: 0;
 }
 
-section, * section {
+section,
+* section {
     @media (max-width: 600px) {
         margin-top: 2em !important;
 
