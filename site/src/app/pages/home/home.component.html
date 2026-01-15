@@ -1,3 +1,12 @@
+<section class="hero-video-container">
+    <iframe 
+        [src]="videoUrl" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+    </iframe>
+</section>
+
 <section class="hero">
 
     <div class="hero-bg" [style.background-image]="featured?.heroImage ? 'url(' + featured.heroImage + ')' : 'none'">

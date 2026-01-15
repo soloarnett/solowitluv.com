@@ -1,4 +1,4 @@
-import { Component, inject, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,12 +12,10 @@ import { InViewAnimationDirective } from 'src/app/directives/in-view.directive';
   selector: 'app-releases',
   imports: [CommonModule, LatestReleasesComponent, InViewAnimationDirective],
   templateUrl: './releases.component.html',
-  styleUrls: ['./releases.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./releases.component.scss']
 })
 export class ReleasesComponent {
   private content = inject(ContentService);
-  private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
   private playback = inject(PlaybackService);
   @Input() latestOnly: boolean = false;
@@ -34,10 +32,6 @@ export class ReleasesComponent {
 
   constructor() {
     this.reload();
-    // Subscribe to playback changes to update UI
-    this.playback.playbackState$.subscribe(() => {
-      this.cdr.markForCheck();
-    });
   }
 
   reload() {
@@ -59,7 +53,10 @@ export class ReleasesComponent {
         this.loading = false;
         this.error = all.length === 0;
       },
-      error: () => { this.loading = false; this.error = true; }
+      error: () => { 
+        this.loading = false; 
+        this.error = true;
+      }
     });
   }
 
@@ -88,7 +85,6 @@ export class ReleasesComponent {
     } else if (section === 'singles') {
       this.expandedSingles.add(releaseKey);
     }
-    this.cdr.markForCheck();
   }
 
   isPlaying(release: any, section: string = 'main'): boolean {
@@ -119,7 +115,6 @@ export class ReleasesComponent {
     } else if (section === 'singles') {
       this.expandedSingles.delete(releaseKey);
     }
-    this.cdr.markForCheck();
   }
 
   getReleaseKey(release: any): string {
@@ -132,7 +127,6 @@ export class ReleasesComponent {
     } else {
       this.playback.pause();
     }
-    this.cdr.markForCheck();
   }
 
   trackByReleaseId(index: number, release: any): any {

@@ -19,12 +19,14 @@ Edit JSON in `src/content/*`. Add images under `src/assets/*`.
 # Automatically get your S3 bucket name (requires AWS CLI and jq):
 BUCKET=$(aws s3api list-buckets --query 'Buckets[?starts_with(Name,`solowitluv-solowitluv-com`)].Name' --output text)
 
-aws s3 sync ./dist/artist-site/browser s3://$BUCKET/ --exclude "index.html" --cache-control "public,max-age=31536000,immutable"
+aws s3 sync ./dist/artist-site/browser s3://$BUCKET/ --exclude "index.html" --exclude "ngsw.json" --exclude "ngsw-worker.js" --cache-control "public,max-age=31536000,immutable"
 aws s3 cp ./dist/artist-site/browser/index.html s3://$BUCKET/index.html --cache-control "no-cache"
+aws s3 cp ./dist/artist-site/browser/ngsw.json s3://$BUCKET/ngsw.json --cache-control "no-cache"
+aws s3 cp ./dist/artist-site/browser/ngsw-worker.js s3://$BUCKET/ngsw-worker.js --cache-control "no-cache"
 
 
 # Automatically get your CloudFront distribution ID (requires AWS CLI and jq):
 DIST_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Aliases.Items[?contains(@, 'solowitluv.com')]].Id" --output text)
 
-aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/index.html" "/" "/releases" "/shows" "/gallery" "/bio"
+aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/index.html" "/ngsw.json" "/ngsw-worker.js" "/" "/releases" "/shows" "/gallery" "/bio"
 ```

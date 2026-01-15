@@ -1,3 +1,52 @@
+.hero-video-container {
+    position: relative;
+    width: 100%;
+    // padding-bottom: 56.25%;
+    /* 16:9 aspect ratio */
+    overflow: hidden;
+    background: #000;
+    z-index: 1;
+    /* Ensure video stays below nav which has z-index: 99999999 */
+
+    @media (max-width: 600px) {
+        margin-top: 2em;
+        height: calc(100vw * 9 / 16);
+    }
+
+    @media (min-width: 601px) {
+        height: calc(70vw * 9 / 16);
+    }
+
+    iframe {
+        transform: scale(1.8);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        pointer-events: none;
+
+        // desktop only
+        @media (min-width: 601px) {
+            height: calc(70vw * 9 / 16);
+        }
+    }
+
+    /* Optional: Add fade effect at top and bottom like the hero-bg */
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom,
+                rgba(0, 0, 0, 0.3) 0%,
+                transparent 20%,
+                transparent 80%,
+                rgba(0, 0, 0, 0.3) 100%);
+        pointer-events: none;
+    }
+}
+
 // Blurred card background for singles (matches releases page)
 .card-blur-bg {
     width: 100%;
@@ -60,7 +109,7 @@
     }
 }
 
-.hero-details-container{
+.hero-details-container {
     max-height: min-content;
     flex: 1 1 auto;
 }

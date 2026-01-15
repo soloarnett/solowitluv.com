@@ -26,5 +26,30 @@
         ]
       }
     }
+  ],
+  "dataGroups": [
+    {
+      "name": "api",
+      "urls": [
+        "https://*.execute-api.us-east-1.amazonaws.com/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "1h",
+        "timeout": "10s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "local-content",
+      "urls": [
+        "/content/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 20,
+        "maxAge": "1d",
+        "strategy": "performance"
+      }
+    }
   ]
 }

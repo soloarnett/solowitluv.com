@@ -1,8 +1,8 @@
 // site/src/app/services/content.service.ts
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { of, Observable, BehaviorSubject } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';   // <-- important: use /operators to avoid import confusion
+import { catchError, map, timeout } from 'rxjs/operators';
 import { USE_RELEASE_API, RELEASE_API_BASE_URL } from '../config';
 
 export interface ReleaseCard {
@@ -42,8 +42,12 @@ export class ContentService {
 
   /** Legacy JSON (current site behavior) */
   private getReleasesLegacy$(): Observable<ReleasesResponse> {
-    return this.http.get<any>('content/releases.json').pipe(
-      map(d => ({ releases: d?.releases ?? [] } as ReleasesResponse))
+    return this.http.get<any>('/content/releases.json').pipe(
+      map(d => ({ releases: d?.releases ?? [] } as ReleasesResponse)),
+      catchError((error) => {
+        console.warn('Failed to load releases.json:', error);
+        return of({ releases: [] } as ReleasesResponse);
+      })
     );
   }
 
@@ -51,8 +55,7 @@ export class ContentService {
   private getReleasesApi$(): Observable<ReleasesResponse> {
     return this.http
       .get<{ count?: number; items?: any[] }>(`${RELEASE_API_BASE_URL}/releases`)
-      .pipe(
-        map(api => {
+      .pipe(        timeout(5000),        map(api => {
           const items = api?.items ?? [];
           // Directly map to ReleaseCard[]
           const releases: ReleaseCard[] = items.map(it => ({
@@ -79,29 +82,50 @@ export class ContentService {
 
   /** Public API that your component calls. Prefers API, falls back to legacy on error. */
   private releasesSubject = new BehaviorSubject<ReleasesResponse | null>(null);
+  private releasesFetchInProgress = false;
+
   getReleases(): Observable<ReleasesResponse> {
+    const useLocalOnly = isDevMode() || !USE_RELEASE_API;
+
     // 1. Emit cache first
     const cacheKey = 'releases-cache-v1';
     const cached = localStorage.getItem(cacheKey);
-    if (cached) {
+    if (cached && !useLocalOnly) {
       try {
         const parsed = JSON.parse(cached);
         if (parsed && parsed.releases) {
-          this.releasesSubject.next(parsed);
+          setTimeout(() => this.releasesSubject.next(parsed), 0);
         }
       } catch {}
     }
-    // 2. Fetch fresh, update cache and subject if changed
-    const fetch$ = (!USE_RELEASE_API ? this.getReleasesLegacy$() : this.getReleasesApi$().pipe(catchError(() => this.getReleasesLegacy$()))).pipe(
-      map(res => res ?? { releases: [] })
-    );
-    fetch$.subscribe((fresh) => {
-      const prev = this.releasesSubject.value;
-      if (!prev || JSON.stringify(prev) !== JSON.stringify(fresh)) {
-        localStorage.setItem(cacheKey, JSON.stringify(fresh));
+
+    // 2. Fetch fresh, only once
+    if (!this.releasesFetchInProgress) {
+      this.releasesFetchInProgress = true;
+
+      const fetch$ = useLocalOnly
+        ? this.getReleasesLegacy$()
+        : this.getReleasesApi$().pipe(
+            catchError(() => {
+              console.warn('API failed, falling back to local JSON');
+              return this.getReleasesLegacy$();
+            })
+          );
+
+      fetch$.subscribe((fresh) => {
+        if (!useLocalOnly) {
+          localStorage.setItem(cacheKey, JSON.stringify(fresh));
+        }
         this.releasesSubject.next(fresh);
-      }
-    });
+        this.releasesFetchInProgress = false;
+      }, (error) => {
+        console.error('Error fetching releases:', error);
+        if (!this.releasesSubject.value) {
+          this.releasesSubject.next({ releases: [] });
+        }
+        this.releasesFetchInProgress = false;
+      });
+    }
     // 3. Return observable (will emit cache first, then update if new)
     return this.releasesSubject.asObservable().pipe(
       map(val => val ?? { releases: [] })
@@ -110,33 +134,63 @@ export class ContentService {
 
   /** Lambda/API for shows, fallback to legacy JSON, cache-first */
   private showsSubject = new BehaviorSubject<any[] | null>(null);
+  private showsFetchInProgress = false;
+
   getShows(): Observable<any[]> {
+    const useLocalOnly = isDevMode();
+
     const cacheKey = 'shows-cache-v1';
     const cached = localStorage.getItem(cacheKey);
-    if (cached) {
+    if (cached && !useLocalOnly) {
       try {
         const parsed = JSON.parse(cached);
         if (Array.isArray(parsed)) {
-          this.showsSubject.next(parsed);
+          setTimeout(() => this.showsSubject.next(parsed), 0);
         }
       } catch {}
     }
-    const SHOWS_API_BASE_URL = 'https://hsef0sw0pe.execute-api.us-east-1.amazonaws.com';
-    const fetch$ = this.http.get<any>(`${SHOWS_API_BASE_URL}/shows`).pipe(
-      map(res => Array.isArray(res) ? res : (res.items || res.body ? JSON.parse(res.body) : [])),
-      catchError(() => this.http.get<any>('content/shows.json').pipe(map(d => d?.upcoming ?? [])))
-    );
-    fetch$.subscribe((fresh) => {
-      const prev = this.showsSubject.value;
-      if (!prev || JSON.stringify(prev) !== JSON.stringify(fresh)) {
-        localStorage.setItem(cacheKey, JSON.stringify(fresh));
+
+    if (!this.showsFetchInProgress) {
+      this.showsFetchInProgress = true;
+
+      const SHOWS_API_BASE_URL = 'https://hsef0sw0pe.execute-api.us-east-1.amazonaws.com';
+      const localFallback$ = this.http.get<any>('/content/shows.json').pipe(
+        map(d => d?.upcoming ?? []),
+        catchError((error) => {
+          console.warn('Failed to load shows.json:', error);
+          return of([]);
+        })
+      );
+
+      const fetch$ = useLocalOnly
+        ? localFallback$
+        : this.http.get<any>(`${SHOWS_API_BASE_URL}/shows`).pipe(
+            timeout(5000),
+            map(res => Array.isArray(res) ? res : (res.items || res.body ? JSON.parse(res.body) : [])),
+            catchError(() => {
+              console.warn('Shows API failed, falling back to local JSON');
+              return localFallback$;
+            })
+          );
+
+      fetch$.subscribe((fresh) => {
+        if (!useLocalOnly) {
+          localStorage.setItem(cacheKey, JSON.stringify(fresh));
+        }
         this.showsSubject.next(fresh);
-      }
-    });
+        this.showsFetchInProgress = false;
+      }, (error) => {
+        console.error('Error fetching shows:', error);
+        if (!this.showsSubject.value) {
+          this.showsSubject.next([]);
+        }
+        this.showsFetchInProgress = false;
+      });
+    }
     return this.showsSubject.asObservable().pipe(
       map(val => val ?? [])
     );
   }
-  getBio()     { return this.http.get<any>('content/bio.json'); }
-  getGallery() { return this.http.get<any>('content/gallery.json'); }
+  getBio() { return this.http.get<any>('/content/bio.json').pipe(catchError(() => of({}))); }
+  getGallery() { return this.http.get<any>('/content/gallery.json').pipe(catchError(() => of({ images: [] }))); }
 }
