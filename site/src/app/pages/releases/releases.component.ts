@@ -29,7 +29,13 @@ export class ReleasesComponent {
   error = false;
 
 
-  constructor() { this.reload(); }
+  constructor() {
+    this.reload();
+    // Subscribe to playback changes to update UI
+    this.playback.playbackState$.subscribe(() => {
+      this.cdr.markForCheck();
+    });
+  }
 
   reload() {
     this.loading = true;

@@ -20,6 +20,13 @@ export class LatestReleasesComponent {
   @Input() loading: boolean = false;
   @Input() error: boolean = false;
 
+  constructor() {
+    // Subscribe to playback changes to update UI
+    this.playback.playbackState$.subscribe(() => {
+      this.cdr.markForCheck();
+    });
+  }
+
   get displayedSingles() {
     return this.releases ?? []
   }

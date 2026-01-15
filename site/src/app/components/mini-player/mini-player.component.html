@@ -16,7 +16,7 @@
 
     <!-- Hidden YouTube Player -->
     <iframe
-      *ngIf="safeYouTubeUrl && !failedToLoad"
+      *ngIf="safeYouTubeUrl && !failedToLoad && iframeKey"
       [src]="safeYouTubeUrl"
       frameborder="0"
       allow="autoplay; encrypted-media"
@@ -26,10 +26,22 @@
       (error)="onIframeError($event)"
     ></iframe>
 
+    <!-- Hidden audio element to enable user gesture for mobile -->
+    <audio #hiddenAudio style="display: none;"></audio>
+
     <!-- Error State -->
     <div class="error-message" *ngIf="failedToLoad">
       <span>Failed to load</span>
       <button (click)="retry()" *ngIf="retryCount < 3">Retry</button>
+    </div>
+
+    <!-- Content Blocker Warning -->
+    <div class="content-blocker-warning" *ngIf="showContentBlockerWarning">
+      <i class="fas fa-info-circle"></i>
+      <span>If audio doesn't play, try tapping pause then play again.</span>
+      <button class="dismiss-btn" (click)="dismissWarning()">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
 
     <!-- Streaming Links -->

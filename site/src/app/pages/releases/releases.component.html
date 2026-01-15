@@ -22,12 +22,12 @@
                     <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" loading="lazy" />
                     <button *ngIf="getYouTubeId(s)" class="play-button" (click)="togglePlay(s, $event, 'albums')" 
                             [class.playing]="isPlaying(s, 'albums')" 
-                            [attr.aria-label]="isPlaying(s, 'albums') ? 'Stop' : 'Play'">
+                            [attr.aria-label]="isPlaying(s, 'albums') ? 'Pause' : 'Play'">
                         <svg *ngIf="!isPlaying(s, 'albums')" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
                         <svg *ngIf="isPlaying(s, 'albums')" viewBox="0 0 24 24" fill="currentColor">
-                            <rect x="6" y="6" width="12" height="12"/>
+                            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
                         </svg>
                     </button>
                 </div>
@@ -71,12 +71,12 @@
                     <img class="cover" [src]="s.coverArt || s.thumb_url || s.heroImage" [alt]="s.title" loading="lazy" />
                     <button *ngIf="getYouTubeId(s)" class="play-button" (click)="togglePlay(s, $event, 'singles')" 
                             [class.playing]="isPlaying(s, 'singles')" 
-                            [attr.aria-label]="isPlaying(s, 'singles') ? 'Stop' : 'Play'">
+                            [attr.aria-label]="isPlaying(s, 'singles') ? 'Pause' : 'Play'">
                         <svg *ngIf="!isPlaying(s, 'singles')" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
                         <svg *ngIf="isPlaying(s, 'singles')" viewBox="0 0 24 24" fill="currentColor">
-                            <rect x="6" y="6" width="12" height="12"/>
+                            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
                         </svg>
                     </button>
                 </div>

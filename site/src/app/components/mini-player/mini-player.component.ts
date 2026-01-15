@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PlaybackService, PlaybackState } from '../../services/playback.service';
@@ -12,6 +12,8 @@ import { PlaybackService, PlaybackState } from '../../services/playback.service'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MiniPlayerComponent {
+  @ViewChild('hiddenAudio') hiddenAudio?: ElementRef<HTMLAudioElement>;
+  
   private playback = inject(PlaybackService);
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
@@ -20,8 +22,12 @@ export class MiniPlayerComponent {
   failedToLoad = false;
   retryCount = 0;
   private iframeElement: HTMLIFrameElement | null = null;
-  private cachedUrl: SafeResourceUrl | null = null;
-  private cachedVideoId: string | null = null;
+  safeYouTubeUrl: SafeResourceUrl | null = null;
+  private iframeReady = false;
+  iframeKey = 1; // Start at 1 so it's truthy for *ngIf
+  showContentBlockerWarning = false;
+  private autoRetryAttempts = 0;
+  private maxAutoRetries = 2;
 
   constructor() {
     this.playback.playbackState$.subscribe(state => {
@@ -31,15 +37,28 @@ export class MiniPlayerComponent {
       this.currentState = state;
       this.failedToLoad = false;
       
-      // If video changed, reset retry count and clear cached URL
+      // If video changed, regenerate URL and reset state
       if (previousVideoId !== state.videoId) {
         this.retryCount = 0;
-        this.cachedUrl = null;
-        this.cachedVideoId = null;
-      }
-      
-      // Control playback via postMessage when play state changes
-      if (previousVideoId === state.videoId && previousIsPlaying !== state.isPlaying && this.iframeElement) {
+        this.iframeReady = false;
+        this.iframeElement = null;
+        this.iframeKey++; // Increment key to force iframe recreation
+        this.showContentBlockerWarning = false;
+        this.autoRetryAttempts = 0;
+        
+        // Generate new URL only when video actually changes
+        if (state.videoId) {
+          // On mobile, use autoplay=1 to leverage the user click gesture directly
+          // On desktop, use autoplay=0 for better control
+          const autoplayParam = this.isMobile() ? '1' : '0';
+          const url = `https://www.youtube.com/embed/${state.videoId}?autoplay=${autoplayParam}&controls=0&modestbranding=1&rel=0&enablejsapi=1&playsinline=1`;
+          this.safeYouTubeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        } else {
+          this.safeYouTubeUrl = null;
+        }
+        // Don't send play command here - wait for onIframeLoad
+      } else if (previousIsPlaying !== state.isPlaying) {
+        // Only control playback if same video and play state changed
         this.controlPlayback(state.isPlaying);
       }
       
@@ -51,24 +70,6 @@ export class MiniPlayerComponent {
     return !!this.currentState.videoId;
   }
 
-  get safeYouTubeUrl(): SafeResourceUrl | null {
-    if (!this.currentState.videoId) {
-      return null;
-    }
-    
-    // Cache the URL to prevent infinite reloads
-    if (this.cachedVideoId === this.currentState.videoId && this.cachedUrl) {
-      return this.cachedUrl;
-    }
-    
-    // Always autoplay=1 on load, we'll control pause via postMessage
-    const url = `https://www.youtube.com/embed/${this.currentState.videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&enablejsapi=1`;
-    this.cachedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-    this.cachedVideoId = this.currentState.videoId;
-    
-    return this.cachedUrl;
-  }
-
   close(): void {
     this.playback.stop();
   }
@@ -78,6 +79,14 @@ export class MiniPlayerComponent {
       this.playback.pause();
     } else if (this.currentState.release) {
       this.playback.play(this.currentState.release, this.currentState.section);
+      
+      // On mobile, if iframe is ready, immediately try to play
+      // This happens within the user click event, so it should work
+      if (this.isMobile() && this.iframeReady) {
+        setTimeout(() => {
+          this.controlPlayback(true);
+        }, 100);
+      }
     }
   }
 
@@ -88,23 +97,62 @@ export class MiniPlayerComponent {
     if (iframe.src && iframe.src.includes('youtube.com')) {
       this.failedToLoad = false;
       
-      // If we should be playing, send play command
-      if (this.currentState.isPlaying) {
-        this.controlPlayback(true);
-      }
-      
-      this.cdr.markForCheck();
+      // Wait for YouTube player to initialize
+      setTimeout(() => {
+        this.iframeReady = true;
+        
+        // On desktop or if not autoplaying, send play command if needed
+        if (this.currentState.isPlaying && !this.isMobile()) {
+          this.controlPlayback(true);
+        }
+        
+        this.cdr.markForCheck();
+      }, 600);
     }
   }
 
   onIframeError(event: Event): void {
     this.failedToLoad = true;
     this.iframeElement = null;
+    this.iframeReady = false;
+    
+    // Likely a content blocker issue - try automatic retry
+    if (this.autoRetryAttempts < this.maxAutoRetries) {
+      this.autoRetryAttempts++;
+      setTimeout(() => {
+        if (this.currentState.isPlaying) {
+          // Toggle play to retry
+          this.playback.pause();
+          setTimeout(() => {
+            if (this.currentState.release) {
+              this.playback.play(this.currentState.release, this.currentState.section);
+            }
+          }, 200);
+        }
+      }, 500);
+    } else {
+      // Show content blocker warning
+      this.showContentBlockerWarning = true;
+      setTimeout(() => {
+        this.showContentBlockerWarning = false;
+        this.cdr.markForCheck();
+      }, 10000);
+    }
+    
     this.cdr.markForCheck();
   }
 
   private controlPlayback(shouldPlay: boolean): void {
     if (!this.iframeElement || !this.iframeElement.contentWindow) return;
+    
+    // Wait for iframe to be ready before sending commands
+    if (!this.iframeReady && shouldPlay) {
+      // If not ready yet, wait and retry
+      setTimeout(() => {
+        this.controlPlayback(shouldPlay);
+      }, 300);
+      return;
+    }
     
     try {
       const command = shouldPlay ? 'playVideo' : 'pauseVideo';
@@ -122,20 +170,22 @@ export class MiniPlayerComponent {
       this.retryCount++;
       this.failedToLoad = false;
       
-      // Clear cached URL to force reload
-      this.cachedUrl = null;
-      this.cachedVideoId = null;
-      
-      // Force reload
-      const currentRelease = this.currentState.release;
-      const currentSection = this.currentState.section;
-      this.playback.stop();
-      this.cdr.markForCheck();
-      
-      setTimeout(() => {
-        this.playback.play(currentRelease, currentSection);
+      // Force reload by regenerating URL
+      if (this.currentState.videoId) {
+        const autoplayParam = this.isMobile() ? '1' : '0';
+        const url = `https://www.youtube.com/embed/${this.currentState.videoId}?autoplay=${autoplayParam}&controls=0&modestbranding=1&rel=0&enablejsapi=1&playsinline=1`;
+        this.safeYouTubeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        
+        const currentRelease = this.currentState.release;
+        const currentSection = this.currentState.section;
+        this.playback.stop();
         this.cdr.markForCheck();
-      }, 100);
+        
+        setTimeout(() => {
+          this.playback.play(currentRelease, currentSection);
+          this.cdr.markForCheck();
+        }, 100);
+      }
     }
   }
 
@@ -155,5 +205,20 @@ export class MiniPlayerComponent {
     return this.currentState.release?.links?.[platform] || 
            this.currentState.release?.preSaveLinks?.[platform] || 
            null;
+  }
+
+  dismissWarning(): void {
+    this.showContentBlockerWarning = false;
+    this.cdr.markForCheck();
+  }
+
+  private isMobile(): boolean {
+    // Check for mobile/tablet devices including modern iPads
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent);
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isIPad = /ipad/i.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    
+    return isMobileUA || (isTouchDevice && isIPad);
   }
 }
