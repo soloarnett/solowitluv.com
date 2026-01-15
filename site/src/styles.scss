@@ -41,15 +41,16 @@ img {
   --radius: 20px;
 }
 
-body {
+html {
   height: 100%;
-  padding-bottom: 120px; /* Space for floating mini player */
+  overflow-x: hidden;
+  background-color: var(--bg-dark);
 }
 
-html {
-  min-height: 100%;
-  background-color: var(--bg-dark);
-  /* fallback so overscroll is dark */
+body {
+  min-height: 100vh;
+  padding-bottom: 140px; /* Space for mini player */
+  overflow-x: hidden;
 }
 
 body {
