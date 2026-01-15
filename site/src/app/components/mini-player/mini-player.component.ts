@@ -273,6 +273,10 @@ export class MiniPlayerComponent {
     return this.currentState.release?.coverArt || this.currentState.release?.heroImage || '';
   }
 
+  get featuredArtists(): string[] {
+    return this.currentState.release?.featuredArtists || [];
+  }
+
   getStreamingLink(platform: string): string | null {
     return this.currentState.release?.links?.[platform] || 
            this.currentState.release?.preSaveLinks?.[platform] || 

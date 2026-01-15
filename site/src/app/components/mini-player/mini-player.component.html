@@ -1,90 +1,73 @@
 <div class="mini-player glass" *ngIf="isVisible">
-  <div class="mini-player-content">
-    <!-- Cover Art -->
-    <div class="cover-art">
-      <img *ngIf="coverImage" [src]="coverImage" [alt]="releaseTitle">
-      <div class="play-overlay" (click)="togglePlay()">
-        <i class="fas" [ngClass]="currentState.isPlaying ? 'fa-pause' : 'fa-play'"></i>
-      </div>
+    <div class="mini-player-content">
+        <!-- Cover Art -->
+        <div class="cover-art">
+            <img *ngIf="coverImage" [src]="coverImage" [alt]="releaseTitle">
+            <div class="play-overlay" (click)="togglePlay()">
+                <i class="fas" [ngClass]="currentState.isPlaying ? 'fa-pause' : 'fa-play'"></i>
+            </div>
+        </div>
+
+        <!-- Track Info -->
+        <div class="track-info">
+            <div class="track-title">{{ releaseTitle }}</div>
+            <div class="track-artist" *ngIf="artistName">{{ artistName }} <span *ngIf="featuredArtists?.length">•
+                    feat.
+                    {{featuredArtists.join(', ')}}</span></div>
+        </div>
+
+        <!-- Unmute Button (Mobile) -->
+        <button class="unmute-btn" *ngIf="showUnmuteButton" (click)="onUnmuteClick()">
+            <i class="fas fa-volume-mute"></i>
+            <span>Tap to unmute</span>
+        </button>
+
+        <!-- Hidden YouTube Player -->
+        <iframe *ngIf="safeYouTubeUrl && !failedToLoad && iframeKey" [src]="safeYouTubeUrl" frameborder="0"
+            allow="autoplay; encrypted-media" allowfullscreen class="hidden-player" (load)="onIframeLoad($event)"
+            (error)="onIframeError($event)"></iframe>
+
+        <!-- Hidden audio element to enable user gesture for mobile -->
+        <audio #hiddenAudio style="display: none;"></audio>
+
+        <!-- Error State -->
+        <div class="error-message" *ngIf="failedToLoad">
+            <span>Failed to load</span>
+            <button (click)="retry()" *ngIf="retryCount < 3">Retry</button>
+        </div>
+
+        <!-- Content Blocker Warning -->
+        <div class="content-blocker-warning" *ngIf="showContentBlockerWarning">
+            <i class="fas fa-info-circle"></i>
+            <span>If audio doesn't play, try tapping pause then play again.</span>
+            <button class="dismiss-btn" (click)="dismissWarning()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Streaming Links -->
+        <div class="streaming-links">
+            <a *ngIf="getStreamingLink('spotify')" [href]="getStreamingLink('spotify')" target="_blank"
+                rel="noopener noreferrer" class="streaming-link">
+                <i class="fab fa-spotify"></i>
+            </a>
+            <a *ngIf="getStreamingLink('appleMusic')" [href]="getStreamingLink('appleMusic')" target="_blank"
+                rel="noopener noreferrer" class="streaming-link">
+                <i class="fab fa-apple"></i>
+            </a>
+            <a *ngIf="getStreamingLink('youtubeMusic')" [href]="getStreamingLink('youtubeMusic')" target="_blank"
+                rel="noopener noreferrer" class="streaming-link">
+                <i class="fab fa-youtube"></i>
+            </a>
+            <a *ngIf="getStreamingLink('soundcloud')" [href]="getStreamingLink('soundcloud')" target="_blank"
+                rel="noopener noreferrer" class="streaming-link">
+                <i class="fab fa-soundcloud"></i>
+            </a>
+        </div>
+
+        <!-- Close Button -->
+        <button class="close-btn" (click)="close()">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
-
-    <!-- Track Info -->
-    <div class="track-info">
-      <div class="track-title">{{ releaseTitle }}</div>
-      <div class="track-artist" *ngIf="artistName">{{ artistName }}</div>
-    </div>
-
-    <!-- Unmute Button (Mobile) -->
-    <button class="unmute-btn" *ngIf="showUnmuteButton" (click)="onUnmuteClick()">
-      <i class="fas fa-volume-mute"></i>
-      <span>Tap to unmute</span>
-    </button>
-
-    <!-- Hidden YouTube Player -->
-    <iframe
-      *ngIf="safeYouTubeUrl && !failedToLoad && iframeKey"
-      [src]="safeYouTubeUrl"
-      frameborder="0"
-      allow="autoplay; encrypted-media"
-      allowfullscreen
-      class="hidden-player"
-      (load)="onIframeLoad($event)"
-      (error)="onIframeError($event)"
-    ></iframe>
-
-    <!-- Hidden audio element to enable user gesture for mobile -->
-    <audio #hiddenAudio style="display: none;"></audio>
-
-    <!-- Error State -->
-    <div class="error-message" *ngIf="failedToLoad">
-      <span>Failed to load</span>
-      <button (click)="retry()" *ngIf="retryCount < 3">Retry</button>
-    </div>
-
-    <!-- Content Blocker Warning -->
-    <div class="content-blocker-warning" *ngIf="showContentBlockerWarning">
-      <i class="fas fa-info-circle"></i>
-      <span>If audio doesn't play, try tapping pause then play again.</span>
-      <button class="dismiss-btn" (click)="dismissWarning()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <!-- Streaming Links -->
-    <div class="streaming-links">
-      <a *ngIf="getStreamingLink('spotify')" 
-         [href]="getStreamingLink('spotify')" 
-         target="_blank" 
-         rel="noopener noreferrer"
-         class="streaming-link">
-        <i class="fab fa-spotify"></i>
-      </a>
-      <a *ngIf="getStreamingLink('appleMusic')" 
-         [href]="getStreamingLink('appleMusic')" 
-         target="_blank" 
-         rel="noopener noreferrer"
-         class="streaming-link">
-        <i class="fab fa-apple"></i>
-      </a>
-      <a *ngIf="getStreamingLink('youtubeMusic')" 
-         [href]="getStreamingLink('youtubeMusic')" 
-         target="_blank" 
-         rel="noopener noreferrer"
-         class="streaming-link">
-        <i class="fab fa-youtube"></i>
-      </a>
-      <a *ngIf="getStreamingLink('soundcloud')" 
-         [href]="getStreamingLink('soundcloud')" 
-         target="_blank" 
-         rel="noopener noreferrer"
-         class="streaming-link">
-        <i class="fab fa-soundcloud"></i>
-      </a>
-    </div>
-
-    <!-- Close Button -->
-    <button class="close-btn" (click)="close()">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
 </div>
