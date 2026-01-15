@@ -103,9 +103,12 @@ section {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
+                inset 0 1px 2px 0 rgba(255, 255, 255, 0.2);
     color: white;
     cursor: pointer;
     display: flex;
@@ -118,11 +121,14 @@ section {
     svg {
         width: 28px;
         height: 28px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
     }
 
     &:hover {
-        background: rgba(0, 0, 0, 0.9);
-        border-color: white;
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5),
+                    inset 0 1px 2px 0 rgba(255, 255, 255, 0.3);
         transform: translate(-50%, -50%) scale(1.1);
     }
 
@@ -131,12 +137,15 @@ section {
     }
 
     &.playing {
-        background: rgba(255, 255, 255, 0.9);
-        color: black;
-        border-color: black;
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.2),
+                    inset 0 1px 2px 0 rgba(255, 255, 255, 0.3);
 
         &:hover {
-            background: white;
+            background: rgba(255, 255, 255, 0.35);
+            border-color: rgba(255, 255, 255, 0.6);
         }
     }
 
