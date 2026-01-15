@@ -19,6 +19,8 @@ export class LatestReleasesComponent {
   @Input() releases: any[] = [];
   @Input() loading: boolean = false;
   @Input() error: boolean = false;
+  
+  expandedReleases = new Set<string>();
 
   constructor() {
     // Subscribe to playback changes to update UI
@@ -49,6 +51,9 @@ export class LatestReleasesComponent {
     if (!videoId) return;
 
     this.playback.toggle(release, 'latest');
+    // Expand links when playing
+    const releaseKey = this.getReleaseKey(release);
+    this.expandedReleases.add(releaseKey);
     this.cdr.markForCheck();
   }
 
@@ -57,11 +62,25 @@ export class LatestReleasesComponent {
   }
 
   shouldShowButtons(release: any): boolean {
-    // Show buttons if no YouTube link OR currently playing
+    // Show buttons if no YouTube link OR release is in expanded state
     const hasYouTube = !!this.getYouTubeId(release);
     if (!hasYouTube) return true;
     
-    return this.isPlaying(release);
+    const releaseKey = this.getReleaseKey(release);
+    return this.expandedReleases.has(releaseKey);
+  }
+
+  collapseLinks(release: any, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const releaseKey = this.getReleaseKey(release);
+    this.expandedReleases.delete(releaseKey);
+    this.cdr.markForCheck();
+  }
+
+  getReleaseKey(release: any): string {
+    return release.id || release.title || '';
   }
 
   trackByReleaseId(index: number, release: any): any {

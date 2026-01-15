@@ -14,6 +14,12 @@
       <div class="track-artist" *ngIf="artistName">{{ artistName }}</div>
     </div>
 
+    <!-- Unmute Button (Mobile) -->
+    <button class="unmute-btn" *ngIf="showUnmuteButton" (click)="onUnmuteClick()">
+      <i class="fas fa-volume-mute"></i>
+      <span>Tap to unmute</span>
+    </button>
+
     <!-- Hidden YouTube Player -->
     <iframe
       *ngIf="safeYouTubeUrl && !failedToLoad && iframeKey"

@@ -28,6 +28,8 @@ export class MiniPlayerComponent {
   showContentBlockerWarning = false;
   private autoRetryAttempts = 0;
   private maxAutoRetries = 2;
+  isMuted = false;
+  showUnmuteButton = false;
 
   constructor() {
     this.playback.playbackState$.subscribe(state => {
@@ -42,28 +44,56 @@ export class MiniPlayerComponent {
         this.retryCount = 0;
         this.iframeReady = false;
         this.iframeElement = null;
-        this.iframeKey++; // Increment key to force iframe recreation
+        this.iframeKey++;
         this.showContentBlockerWarning = false;
         this.autoRetryAttempts = 0;
         
         // Generate new URL only when video actually changes
         if (state.videoId) {
-          // On mobile, use autoplay=1 to leverage the user click gesture directly
-          // On desktop, use autoplay=0 for better control
-          const autoplayParam = this.isMobile() ? '1' : '0';
-          const url = `https://www.youtube.com/embed/${state.videoId}?autoplay=${autoplayParam}&controls=0&modestbranding=1&rel=0&enablejsapi=1&playsinline=1`;
-          this.safeYouTubeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+          if (this.isMobile()) {
+            // On mobile: use autoplay=1&mute=1 (muted autoplay is allowed on iOS)
+            const url = `https://www.youtube.com/embed/${state.videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&enablejsapi=1&playsinline=1`;
+            this.safeYouTubeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+          } else {
+            // On desktop: use autoplay=0 and control via postMessage
+            const url = `https://www.youtube.com/embed/${state.videoId}?autoplay=0&controls=0&modestbranding=1&rel=0&enablejsapi=1&playsinline=1`;
+            this.safeYouTubeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+          }
         } else {
           this.safeYouTubeUrl = null;
         }
-        // Don't send play command here - wait for onIframeLoad
       } else if (previousIsPlaying !== state.isPlaying) {
         // Only control playback if same video and play state changed
-        this.controlPlayback(state.isPlaying);
+        if (state.isPlaying) {
+          this.sendPlayCommandsWithRetry();
+        } else {
+          this.controlPlayback(false);
+        }
       }
       
       this.cdr.markForCheck();
     });
+  }
+
+  private sendPlayCommandsWithRetry(): void {
+    if (this.isMobile()) {
+      // Mobile: Very aggressive retry strategy
+      const delays = [100, 300, 600, 1000, 1500, 2000, 2500, 3000, 3500, 4000];
+      delays.forEach(delay => {
+        setTimeout(() => {
+          if (this.currentState.isPlaying && this.iframeReady) {
+            this.controlPlayback(true);
+          }
+        }, delay);
+      });
+    } else {
+      // Desktop: Single delayed command
+      setTimeout(() => {
+        if (this.currentState.isPlaying && this.iframeReady) {
+          this.controlPlayback(true);
+        }
+      }, 2000);
+    }
   }
 
   get isVisible(): boolean {
@@ -80,9 +110,7 @@ export class MiniPlayerComponent {
     } else if (this.currentState.release) {
       this.playback.play(this.currentState.release, this.currentState.section);
       
-      // On mobile, if iframe is ready, immediately try to play
-      // This happens within the user click event, so it should work
-      if (this.isMobile() && this.iframeReady) {
+      if (this.iframeReady) {
         setTimeout(() => {
           this.controlPlayback(true);
         }, 100);
@@ -96,18 +124,18 @@ export class MiniPlayerComponent {
     
     if (iframe.src && iframe.src.includes('youtube.com')) {
       this.failedToLoad = false;
+      this.iframeReady = true;
       
-      // Wait for YouTube player to initialize
-      setTimeout(() => {
-        this.iframeReady = true;
-        
-        // On desktop or if not autoplaying, send play command if needed
-        if (this.currentState.isPlaying && !this.isMobile()) {
-          this.controlPlayback(true);
+      if (this.currentState.isPlaying) {
+        if (this.isMobile()) {
+          this.isMuted = true;
+          this.showUnmuteButton = true;
+        } else {
+          this.sendPlayCommandsWithRetry();
         }
-        
-        this.cdr.markForCheck();
-      }, 600);
+      }
+      
+      this.cdr.markForCheck();
     }
   }
 
@@ -145,24 +173,33 @@ export class MiniPlayerComponent {
   private controlPlayback(shouldPlay: boolean): void {
     if (!this.iframeElement || !this.iframeElement.contentWindow) return;
     
-    // Wait for iframe to be ready before sending commands
-    if (!this.iframeReady && shouldPlay) {
-      // If not ready yet, wait and retry
-      setTimeout(() => {
-        this.controlPlayback(shouldPlay);
-      }, 300);
-      return;
-    }
-    
     try {
       const command = shouldPlay ? 'playVideo' : 'pauseVideo';
+      const message = JSON.stringify({ event: 'command', func: command, args: [] });
+      this.iframeElement.contentWindow.postMessage(message, '*');
+    } catch (error) {
+      // Silent error handling
+    }
+  }
+
+  private unmuteVideo(): void {
+    if (!this.iframeElement || !this.iframeElement.contentWindow) return;
+    
+    try {
       this.iframeElement.contentWindow.postMessage(
-        JSON.stringify({ event: 'command', func: command, args: [] }),
+        JSON.stringify({ event: 'command', func: 'unMute', args: [] }),
         '*'
       );
     } catch (error) {
-      console.error('Error controlling playback:', error);
+      // Silent error handling
     }
+  }
+
+  onUnmuteClick(): void {
+    this.unmuteVideo();
+    this.isMuted = false;
+    this.showUnmuteButton = false;
+    this.cdr.markForCheck();
   }
 
   retry(): void {
@@ -172,9 +209,13 @@ export class MiniPlayerComponent {
       
       // Force reload by regenerating URL
       if (this.currentState.videoId) {
-        const autoplayParam = this.isMobile() ? '1' : '0';
-        const url = `https://www.youtube.com/embed/${this.currentState.videoId}?autoplay=${autoplayParam}&controls=0&modestbranding=1&rel=0&enablejsapi=1&playsinline=1`;
-        this.safeYouTubeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        if (this.isMobile()) {
+          const url = `https://www.youtube.com/embed/${this.currentState.videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&enablejsapi=1&playsinline=1`;
+          this.safeYouTubeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        } else {
+          const url = `https://www.youtube.com/embed/${this.currentState.videoId}?autoplay=0&controls=0&modestbranding=1&rel=0&enablejsapi=1&playsinline=1`;
+          this.safeYouTubeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        }
         
         const currentRelease = this.currentState.release;
         const currentSection = this.currentState.section;
@@ -213,7 +254,6 @@ export class MiniPlayerComponent {
   }
 
   private isMobile(): boolean {
-    // Check for mobile/tablet devices including modern iPads
     const userAgent = navigator.userAgent.toLowerCase();
     const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent);
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;

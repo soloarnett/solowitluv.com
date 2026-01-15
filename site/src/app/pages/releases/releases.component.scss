@@ -22,7 +22,7 @@ section {
 
 .button-row-wrapper {
     max-height: 0;
-    overflow: hidden;
+    overflow: visible;
     opacity: 0;
     transition: max-height 0.4s ease-out, opacity 0.4s ease-out, margin-top 0.4s ease-out;
     margin-top: 0;
@@ -31,6 +31,43 @@ section {
         max-height: 200px;
         opacity: 1;
         margin-top: 10px;
+    }
+}
+
+.button-row-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+.collapse-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-brd);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+    flex-shrink: 0;
+    
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+    }
+
+    &:active {
+        transform: scale(0.95);
     }
 }
 

@@ -27,6 +27,9 @@ export class ReleasesComponent {
   albums: any[] = [];
   loading = false;
   error = false;
+  
+  expandedAlbums = new Set<string>();
+  expandedSingles = new Set<string>();
 
 
   constructor() {
@@ -78,6 +81,13 @@ export class ReleasesComponent {
     if (!videoId) return;
 
     this.playback.toggle(release, section);
+    // Expand links when playing
+    const releaseKey = this.getReleaseKey(release);
+    if (section === 'albums') {
+      this.expandedAlbums.add(releaseKey);
+    } else if (section === 'singles') {
+      this.expandedSingles.add(releaseKey);
+    }
     this.cdr.markForCheck();
   }
 
@@ -86,11 +96,34 @@ export class ReleasesComponent {
   }
 
   shouldShowButtons(release: any, section: string = 'main'): boolean {
-    // Show buttons if no YouTube link OR currently playing
+    // Show buttons if no YouTube link OR release is in expanded state
     const hasYouTube = !!this.getYouTubeId(release);
     if (!hasYouTube) return true;
     
-    return this.isPlaying(release, section);
+    const releaseKey = this.getReleaseKey(release);
+    if (section === 'albums') {
+      return this.expandedAlbums.has(releaseKey);
+    } else if (section === 'singles') {
+      return this.expandedSingles.has(releaseKey);
+    }
+    return false;
+  }
+
+  collapseLinks(release: any, section: string, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const releaseKey = this.getReleaseKey(release);
+    if (section === 'albums') {
+      this.expandedAlbums.delete(releaseKey);
+    } else if (section === 'singles') {
+      this.expandedSingles.delete(releaseKey);
+    }
+    this.cdr.markForCheck();
+  }
+
+  getReleaseKey(release: any): string {
+    return release.id || release.title || '';
   }
 
   onPlayVideo(release: any | null, section: string = 'main'): void {
