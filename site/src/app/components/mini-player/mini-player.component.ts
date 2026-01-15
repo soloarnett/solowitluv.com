@@ -47,6 +47,8 @@ export class MiniPlayerComponent {
         this.iframeKey++;
         this.showContentBlockerWarning = false;
         this.autoRetryAttempts = 0;
+        this.isMuted = false;
+        this.showUnmuteButton = false;
         
         // Generate new URL only when video actually changes
         if (state.videoId) {
@@ -72,6 +74,23 @@ export class MiniPlayerComponent {
       }
       
       this.cdr.markForCheck();
+    });
+
+    // Listen for YouTube iframe events to detect when playback ends
+    window.addEventListener('message', (event) => {
+      if (event.origin === 'https://www.youtube.com') {
+        try {
+          const data = JSON.parse(event.data);
+          // YouTube sends state changes: -1 (unstarted), 0 (ended), 1 (playing), 2 (paused)
+          if (data.event === 'infoDelivery' && data.info && data.info.playerState === 0) {
+            // Video ended - collapse mini player and reset state
+            this.playback.stop();
+            this.cdr.markForCheck();
+          }
+        } catch (error) {
+          // Ignore parse errors for non-YouTube messages
+        }
+      }
     });
   }
 
@@ -125,6 +144,18 @@ export class MiniPlayerComponent {
     if (iframe.src && iframe.src.includes('youtube.com')) {
       this.failedToLoad = false;
       this.iframeReady = true;
+      
+      // Request YouTube iframe to send state change events
+      try {
+        if (iframe.contentWindow) {
+          iframe.contentWindow.postMessage(
+            JSON.stringify({ event: 'listening', id: iframe.id }),
+            '*'
+          );
+        }
+      } catch (error) {
+        // Silent error handling
+      }
       
       if (this.currentState.isPlaying) {
         if (this.isMobile()) {
