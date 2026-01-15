@@ -33,6 +33,16 @@
         }
     }
 
+    /* Dim overlay on video */
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1;
+        pointer-events: none;
+    }
+
     /* Optional: Add fade effect at top and bottom like the hero-bg */
     &::after {
         content: '';
@@ -43,7 +53,61 @@
                 transparent 20%,
                 transparent 80%,
                 rgba(0, 0, 0, 0.3) 100%);
+        z-index: 1;
         pointer-events: none;
+    }
+}
+
+.hero-video-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.artist-name-hero {
+    font-size: clamp(7rem, 10vw, 9rem);
+    //slightly smaller text for tablet sizes
+    @media (max-width: 1024px) {
+        font-size: clamp(5rem, 8vw, 7rem);
+    }
+    white-space: nowrap;
+    font-weight: 900;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: center;
+    
+    // Glass text effect
+    background: linear-gradient(
+        135deg,
+        rgba(240, 255, 255, 0.7) 0%,
+        rgba(223, 250, 255, 0.5) 25%,
+        rgba(211, 254, 255, 0.2) 50%,
+        rgba(219, 237, 255, 0.5) 75%,
+        rgba(211, 234, 255, 0.7) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    // Multiple shadows for depth and glow
+    text-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.7),
+        0 0 10px rgba(255, 255, 255, 0.1),
+        0 1px 2px rgba(104, 104, 104, 0.1),
+        0 2px 4px rgba(105, 105, 105, 0.1);
+    
+    // Add a subtle stroke
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+
+    @media (max-width: 600px) {
+        font-size: clamp(2rem, 10vw, 3rem);
+        -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.5);
     }
 }
 
@@ -72,6 +136,7 @@
     align-items: center;
     justify-content: center;
     gap: 2em;
+    padding: 0 2.5em;
 
     @media (max-width: 768px) {
         flex-direction: column;
