@@ -23,7 +23,7 @@
         </button>
 
         <!-- Hidden YouTube Player -->
-        <iframe *ngIf="safeYouTubeUrl && !failedToLoad && iframeKey" [src]="safeYouTubeUrl" frameborder="0"
+        <iframe *ngIf="safeYouTubeUrl && !failedToLoad" [src]="safeYouTubeUrl" frameborder="0"
             allow="autoplay; encrypted-media" allowfullscreen class="hidden-player" (load)="onIframeLoad($event)"
             (error)="onIframeError($event)"></iframe>
 
