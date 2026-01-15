@@ -56,10 +56,12 @@ body {
   margin: 0;
   color: var(--text);
 
-  transition: all 0.3s ease-in-out;
-  -webkit-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
+  /* Smooth transition for background changes - only color, not animation */
+  transition: background-color 1.5s ease-in-out;
+  -webkit-transition: background-color 1.5s ease-in-out;
+  -moz-transition: background-color 1.5s ease-in-out;
+  -o-transition: background-color 1.5s ease-in-out;
+  
   /* Animated, multi-color gradient background with vendor prefixes */
   background: radial-gradient(circle, #1f0e04, #030b23, #000, #030b23, #1f0e04);
   background: -webkit-radial-gradient(circle, #1f0e04, #030b23, #000, #030b23, #1f0e04);
@@ -71,6 +73,17 @@ body {
   -webkit-animation: gradientShift 24s ease-in-out infinite;
   -moz-animation: gradientShift 24s ease-in-out infinite;
   background-repeat: no-repeat;
+  
+  font: 400 16px/1.6 system-ui,
+  -apple-system,
+  Segoe UI,
+  Roboto,
+  Helvetica,
+  Arial,
+  "Apple Color Emoji",
+  "Segoe UI Emoji";
+}
+
 /* Vendor-prefixed keyframes for gradient animation */
 @-webkit-keyframes gradientShift {
   0% {
@@ -104,16 +117,6 @@ body {
   100% {
     background-position: 0% 40%;
   }
-}
-
-  font: 400 16px/1.6 system-ui,
-  -apple-system,
-  Segoe UI,
-  Roboto,
-  Helvetica,
-  Arial,
-  "Apple Color Emoji",
-  "Segoe UI Emoji";
 }
 
 
